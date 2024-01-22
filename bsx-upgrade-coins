@@ -1,0 +1,4 @@
+#!/bin/bash
+export SWAP_DATADIR=$HOME/coinswaps
+. $SWAP_DATADIR/venv/bin/activate && python -V
+./dep/upgradecoins.sh
