@@ -1,5 +1,4 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
-python3 -m venv "$SWAP_DATADIR/venv"
 . $SWAP_DATADIR/venv/bin/activate && python -V
-/usr/local/bin/bsx/startup.sh
+/usr/local/bin/bsx/addcoin.sh
