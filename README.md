@@ -10,3 +10,9 @@ cd basicswap-bash && ./install.sh
 # Running BasicSwapDEX
 `basicswap-bash`
 
+# Add coins
+`bsx-addcoin`
+# Update BSX core
+`bsx-update`
+# Update blockchains
+`bsx-upgrade-coins`
