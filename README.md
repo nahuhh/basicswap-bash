@@ -1,12 +1,18 @@
 # basicswap-bash
 A BasicSwapDEX bash installer for Debian/Ubuntu
 
-# Installation
+### Installation
 ```bash
 wget https://github.com/nahuhh/basicswap-bash/releases/latest/download/basicswap-bash.tar.gz
 tar xvf basicswap-bash.tar.gz
 cd basicswap-bash && ./install.sh
 ```
-# Running BasicSwapDEX
+### Running BasicSwapDEX
 `basicswap-bash`
 
+### Add coins
+`bsx-addcoin`
+### Update BSX core
+`bsx-update`
+### Update blockchains
+`bsx-upgrade-coins`
