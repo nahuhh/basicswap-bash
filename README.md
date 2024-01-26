@@ -8,11 +8,19 @@ tar xvf basicswap-bash.tar.gz
 cd basicswap-bash && ./install.sh
 ```
 ### Running BasicSwapDEX
-`basicswap-bash`
+```
+basicswap-bash
+```
 
 ### Add coins
-`bsx-addcoin`
+```
+bsx-addcoin
+```
 ### Update BSX core
-`bsx-update`
+```
+bsx-update
+```
 ### Update blockchains
-`bsx-upgrade-coins`
+```
+bsx-upgrade-coins
+```
