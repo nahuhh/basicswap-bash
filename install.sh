@@ -44,4 +44,4 @@ mkdir -p "$SWAP_DATADIR/venv"
 python3 -m venv "$SWAP_DATADIR/venv"
 
 ## Activate venv
-./dep/activate_venv.sh
+./bsx/activate_venv.sh
