@@ -7,8 +7,7 @@ green="echo -e -n \e[32;1m"
 nocolor="echo -e -n \e[0m"
 
 # Title Bar
-$green
-echo -e "\n"
+$green "\n"
 title="BasicSwapDEX installer"
 COLUMNS=$(tput cols)
 title_size=${#title}
@@ -19,10 +18,19 @@ printf "%${COLUMNS}s" " " | tr " " "*"
 $nocolor
 
 ## Configure Monero node
-read -p $'\n\nEnter Address of Monero node [example: http://192.168.1.123] ' monerod_addr
-read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
-$green; printf $monerod_addr:$monerod_port; $nocolor
-echo -e "\nPress any key to continue, or CTRL-C to exit." && read
+echo -e "\n\n[1]Connect to a Monero node\n[2]Allow BasicSwapDEX to run a Monero node (+70GB)\n"
+until [[ "$l" =~ ^[12]$ ]]; do
+read -p 'Select an option: ' l
+	case $l in
+	 	1) read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
+		   read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
+		   $green "Look good? $monerod_addr:$monerod_port"; $nocolor;;
+	 	2) $green "\nBasicSwapDEX will run the Monero node for you."; $nocolor;;
+		*) $red "\nYou must answer 1 or 2\n"; $nocolor;;
+	esac
+done
+echo -e "\nShall we begin?"
+read -p 'Press any key to continue, or CTRL-C to exit.'
 
 ## Update & Install dependencies
 sudo apt update
