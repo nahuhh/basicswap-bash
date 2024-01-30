@@ -8,7 +8,7 @@ mv ./coincurve-anonswap/*/{.,}* ./coincurve-anonswap || true
 cd $SWAP_DATADIR/coincurve-anonswap
 pip3 install .
 ## UBUNTU 22.04 FIX upgrade protobuf inside of venv
-python -m pip --upgrade "protobuf<=3.20.1"
+python3 -m pip install --upgrade "protobuf<=3.20.1"
 
 ## Clone basicswap git
 cd $SWAP_DATADIR
