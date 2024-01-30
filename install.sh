@@ -34,7 +34,11 @@ read -p 'Press any key to continue, or CTRL-C to exit.'
 
 ## Update & Install dependencies
 sudo apt update
-sudo apt install -y git wget python3-full python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
+## python-is-python3 for ubuntu
+sudo apt install -y git wget python-is-python3 python3-full python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
+# Move scripts to /usr/local/bin
+sudo rm -r /usr/local/bin/bsx # Remove old
+sudo mv -f -t /usr/local/bin/ basicswap-bash bsx* # Add new
 
 ## Make venv
 export SWAP_DATADIR=$HOME/coinswaps
@@ -42,6 +46,5 @@ export monerod_addr=$monerod_addr
 export monerod_port=$monerod_port
 mkdir -p "$SWAP_DATADIR/venv"
 python3 -m venv "$SWAP_DATADIR/venv"
-
 ## Activate venv
-./bsx/activate_venv.sh
+/usr/local/bin/bsx/activate_venv.sh
