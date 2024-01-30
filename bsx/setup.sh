@@ -7,19 +7,16 @@ unzip -d coincurve-anonswap coincurve-anonswap.zip
 mv ./coincurve-anonswap/*/{.,}* ./coincurve-anonswap || true
 cd $SWAP_DATADIR/coincurve-anonswap
 pip3 install .
+## UBUNTU 22.04 FIX upgrade protobuf inside of venv
+python -m pip3 --upgrade "protobuf<=3.20.1"
 
 ## Clone basicswap git
 cd $SWAP_DATADIR
 git clone https://github.com/tecnovert/basicswap.git
 cd $SWAP_DATADIR/basicswap
-
 ## Install basicswap
 protoc -I=basicswap --python_out=basicswap basicswap/messages.proto
 pip3 install .
-
-# Move scripts to /usr/local/bin
-cd $SWAP_DATADIR
-sudo mv -f -t /usr/local/bin/ basicswap-bash bsx*
 
 ## Run basicswap-prepare with particl and monero
 if [[ "$monerod_addr" && "$monerod_port" ]]; then
