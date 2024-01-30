@@ -34,8 +34,7 @@ read -p 'Press any key to continue, or CTRL-C to exit.'
 
 ## Update & Install dependencies
 sudo apt update
-# python-is-python3 for ubuntu
-sudo apt install -y git wget python-is-python3 python3-full python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
+sudo apt install -y git wget python3-full python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
 # Move scripts to /usr/local/bin
 sudo rm -r /usr/local/bin/bsx # Remove old
 sudo mv -f -t /usr/local/bin/ basicswap-bash bsx* # Add new
