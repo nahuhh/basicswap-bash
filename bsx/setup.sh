@@ -18,16 +18,31 @@ cd $SWAP_DATADIR/basicswap
 protoc -I=basicswap --python_out=basicswap basicswap/messages.proto
 pip3 install .
 
-## Run basicswap-prepare with particl and monero
-if [[ "$monerod_addr" && "$monerod_port" ]]; then
-	# Use remote Monero node
+## Decide a source for Monero's restore height
+if [[ "$xmrrestoreheight" ]]; then
+	CURRENT_XMR_HEIGHT=$xmrrestoreheight
+elif [[ "$monerod_addr" ]]; then
+	# Use custom Monero node
 	CURRENT_XMR_HEIGHT=$(curl "http://$monerod_addr:$monerod_port/get_info" | jq .height)
-	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
-else	# Use BasicSwapDEX's Monero node
+else
+	# Use public node
 	CURRENT_XMR_HEIGHT=$(curl https://localmonero.co/blocks/api/get_stats | jq .height)
-	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
 fi
-	$red; echo -e "\n\nMake note of your seed above\n"; $nocolor
-echo 'Install complete.
 
-Use `basicswap-bash` to run, `bsx-update` to update, and `bsx-addcoin` to add a coin'
+# Use the custom Monero node
+if [[ "$monerod_addr" && "$particl_mnemonic" ]]; then
+	PARTICL_MNEMONIC=$particl_mnemonic
+	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
+	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
+elif [[ "$monerod_addr" ]]; then
+	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
+	$red"\n\nMake note of your seed above\n"; $nocolor
+elif [[ "particl_mnemonic" ]]; then
+	PARTICL_MNEMONIC=$particl_mnemonic
+	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
+else
+	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
+	$red"\n\nMake note of your seed above\n"; $nocolor
+fi
+
+$green"Install complete.\n\nUse `basicswap-bash` to run, `bsx-update` to update, and `bsx-addcoin` to add a coin"; $nocolor

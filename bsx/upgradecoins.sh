@@ -2,7 +2,7 @@
 
 ## Prompt for user input
 echo "You can only update coins which you have already added to your install"
-echo -e "\n\nList of coins supported by BasicSwapDEX (case sensitive):\nbitcoin\ndash\nfiro\nlitecoin\nparticl\nPIVX\n"
+echo -e "\n\nList of coins supported by BasicSwapDEX (case sensitive):\nbitcoin\ndash\nfiro\nlitecoin\nmonero\nparticl\nPIVX\n"
 read -p 'Full name of coin to update [example: litecoin] ' updatecoin
 
 ## Confirm
