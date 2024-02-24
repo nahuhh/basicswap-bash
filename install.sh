@@ -82,12 +82,13 @@ read -p 'Select an option [1|2]: ' l
 done
 
 ## Begin Install
-echo -e "\n\nShall we begin?"
+echo -e "\n\nInstalling dependencies"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 ## Update & Install dependencies
 sudo apt update # python-is-python3 for ubuntu
 sudo apt install -y git wget python-is-python3 python3-venv python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
 # Move scripts to /usr/local/bin
+sudo rm -r /usr/local/bin/bsx* /usr/local/bin/basicswap-bash
 sudo mv -f -t /usr/local/bin/ basicswap-bash bsx*
 ## Make venv and set variables for install
 export SWAP_DATADIR=$HOME/coinswaps

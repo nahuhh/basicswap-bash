@@ -17,11 +17,11 @@ if [ $addcoin = bitcoin ]; then
 
 	if [ $confirmed = yes ]; then
 		echo "Using btcfastsync"
-		basicswap-prepare --usebtcfastsync --datadir=/$SWAP_DATADIR --addcoin=$addcoin
+		basicswap-prepare --usebtcfastsync --datadir=$SWAP_DATADIR --addcoin=$addcoin
 	else
 		echo "Not using btcfastsync"
-		basicswap-prepare --datadir=/$SWAP_DATADIR --addcoin=$addcoin
+		basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin
 	fi
 else
-		basicswap-prepare --datadir=/$SWAP_DATADIR --addcoin=$addcoin
+		basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin
 fi

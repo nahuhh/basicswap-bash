@@ -42,7 +42,7 @@ if [[ "$monerod_addr" && "$particl_mnemonic" ]]; then
 elif [[ "$monerod_addr" ]]; then
 	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$CURRENT_XMR_HEIGHT
 	$red"\n\nMake note of your seed above\n"; $nocolor
-elif [[ "particl_mnemonic" ]]; then
+elif [[ "$particl_mnemonic" ]]; then
 	PARTICL_MNEMONIC=$particl_mnemonic
 	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
 else
