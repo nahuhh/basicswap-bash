@@ -1,10 +1,10 @@
 #/bin/bash
 # Download Scripts
-wget -O basicswap-bash.tar.gz https://github.com/nahuhh/basicswap-bash/releases/latest/download/basicswap-bash.tar.gz
-tar xvf basicswap-bash.tar.gz
-cd basicswap-bash
+curl -O basicswap-beta.tar.gz https://github.com/nahuhh/basicswap-bash/releases/download/beta/basicswap-beta.tar.gz
+tar xvf basicswap-beta.tar.gz
+cd basicswap-beta
 # Install BasicSwapDEX
 ./install.sh
 # Cleanup
 cd ..
-rm -rf basicswap-bash
+rm -rf basicswap-beta
