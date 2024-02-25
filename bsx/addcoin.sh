@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Prompt for user input
-echo -e "\n\nThe following coins can be added (case sensitive)\nbitcoin\ndash\nfiro\nlitecoin\nparticl\npivx\n"
+echo -e "\n\nThe following coins can be added (case sensitive)\nbitcoin\ndash\nfiro\nlitecoin\npivx\n"
 read -p 'Full name of coin to add [example: litecoin] ' addcoin
 ## Confirm
 echo -e "\nAdd $addcoin to your BasicSwap install, correct? Press any key to continue. CTRL-C to exit"

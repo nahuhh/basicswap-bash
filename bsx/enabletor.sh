@@ -1,13 +1,50 @@
 #!/bin/bash
 
+# Colors
+red="echo -e -n \e[31;1m"
+green="echo -e -n \e[32;1m"
+nocolor="echo -e -n \e[0m"
+
+# Detect Operating system
+INSTALL=""
+UPDATE=""
+INIT_TOR="sudo systemctl restart tor"
+detect_os_arch() {
+    if type -P apt > /dev/null; then
+        # Debian / Ubuntu / Mint
+        INSTALL="sudo apt install -y"
+        UPDATE="sudo apt update"
+        $green"\nDetected Debian\n";$nocolor
+    elif type -P dnf > /dev/null; then
+        # Fedora
+        INSTALL="sudo dnf install -y"
+        UPDATE="sudo dnf check-update"
+        $green"\nDetected Fedora\n";$nocolor
+    elif type -P pacman > /dev/null; then
+        # Arch Linux
+        INSTALL="sudo pacman -S"
+        UPDATE="sudo pacman -Syu"
+        $green"\nDetected Arch Linux\n";$nocolor
+    elif type -P brew > /dev/null; then
+        # MacOS
+        INSTALL="brew install"
+        $green"\nDetected MacOS\n";$nocolor
+    else
+        $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
+        exit
+    fi
+}
+
+detect_os_arch
+
 # Check for Tor installation
-torinstall=$(apt-cache policy tor | grep "Installed:" | grep -E -o "[0-9]\w+")
-if [[ "$torinstall" ]]; then
+if type -P tor > /dev/null; then
 	echo -e "\nTor is already installed :)"
 else
 	# Install and configure tor
 	echo "Installing Tor..."
-	sudo apt install tor -y
+	$UPDATE
+	$INSTALL tor
 fi
 
 # Create HashesControlPassword
@@ -25,7 +62,7 @@ else
 fi
 
 # Restart tor to apply
-sudo systemctl restart tor
+$INIT_TOR
 echo "Waiting for Tor... 5sec" && sleep 5
 
 # lol are we there yet?
