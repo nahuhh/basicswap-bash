@@ -16,6 +16,59 @@ printf "%${span}s\n" "$title"
 printf "%${COLUMNS}s" " " | tr " " "*"
 $nocolor
 
+# Detect Operating system
+INSTALL=""
+UPDATE=""
+DEPENDENCY=""
+detect_os_arch() {
+    if type -P apt > /dev/null; then
+        # Debian / Ubuntu / Mint
+        INSTALL="sudo apt install"
+        UPDATE="sudo apt update"
+        DEPENDENCY="python-is-python3 python3-pip python3-venv gnupg pkg-config protobuf-compiler"
+	$green"\nDetected Debian\n";$nocolor
+    elif type -P dnf > /dev/null; then
+        # Fedora
+        INSTALL="sudo dnf install"
+        UPDATE="sudo dnf check-update"
+        DEPENDENCY="python3-virtualenv python3-pip gnupg2 pkgconf protobuf-compiler"
+	$green"\nDetected Fedora\n";$nocolor
+    elif type -P pacman > /dev/null; then
+        # Arch Linux
+        INSTALL="sudo pacman -S"
+        UPDATE="sudo pacman -Syu"
+        DEPENDENCY="python-pipenv gnupg protobuf pkgconf base-devel"
+	$green"\nDetected Arch Linux\n";$nocolor
+    elif type -P brew > /dev/null; then
+        # MacOS
+        INSTALL="brew install"
+        DEPENDENCY="wget unzip python git protobuf gnupg automake libtool pkg-config curl jq"
+	$green"\nDetected MacOS\n";$nocolor
+    else
+        $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
+	exit
+    fi
+}
+
+detect_os_arch
+
+# Enable tor
+echo -e "\n\n[1] Tor ON\n[2] Tor OFF\n"
+until [[ "$tor_on" =~ ^[12]$ ]]; do
+read -p 'Select an option: [1|2] ' tor_on
+	case $tor_on in
+		1)
+		$green"\nBasicSwapDEX will use Tor\n";$nocolor
+		;;
+		2)
+		$red"\nBasicSwapDEX will NOT use Tor\n";$nocolor
+		;;
+		*)
+		$red"You must answer 1 or 2\n";$nocolor
+		;;
+	esac
+done
+
 ## Particl restore Seed
 echo -e "\n\n[1] New Install (default)\n[2] Restore from Particl Seed\n"
 until [[ "$restore" =~ ^[12]$ ]]; do
@@ -85,8 +138,8 @@ done
 echo -e "\n\nInstalling dependencies"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 ## Update & Install dependencies
-sudo apt update # python-is-python3 for ubuntu
-sudo apt install -y git wget python-is-python3 python3-venv python3-pip gnupg unzip protobuf-compiler automake libtool pkg-config curl jq
+$UPDATE
+$INSTALL $DEPENDENCY git wget unzip automake libtool jq
 # Move scripts to /usr/local/bin
 sudo rm -r /usr/local/bin/bsx* /usr/local/bin/basicswap-bash
 sudo mv -f -t /usr/local/bin/ basicswap-bash bsx*
@@ -96,7 +149,8 @@ export monerod_addr=$monerod_addr
 export monerod_port=$monerod_port
 export particl_mnemonic=$particl_mnemonic
 export xmrrestoreheight=$xmrrestoreheight
+export tor_on=$tor_on
 mkdir -p "$SWAP_DATADIR/venv"
-python3 -m venv "$SWAP_DATADIR/venv"
+python -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
 /usr/local/bin/bsx/activate_venv.sh
