@@ -1,4 +1,4 @@
 #!/bin/bash
 cd $SWAP_DATADIR/basicswap
 git pull
-pip3 install .
+$SWAP_DATADIR/venv/bin/pip install .
