@@ -46,6 +46,28 @@ detect_os_arch() {
 }
 detect_os_arch
 
+# Enable tor
+echo -e "\n\n[1] Tor ON\n[2] Tor OFF\n"
+until [[ "$tor_on" =~ ^[12]$ ]]; do
+read -p 'Select an option: [1|2] ' restore
+	case $restore in
+		1)
+		$green"\nBasicSwapDEX will use Tor\n";$nocolor
+		;;
+		2)
+		$red"\nBasicSwapDEX will NOT use Tor\n";$nocolor
+		*)
+		$red"You must answer 1 or 2\n";$nocolor
+		;;
+	esac
+done
+
+enable_tor() {
+	if [[ "$tor_on" = 1 ]]; then
+		/usr/local/bin/bsx-enabletor
+	fi
+}
+
 ## Particl restore Seed
 echo -e "\n\n[1] New Install (default)\n[2] Restore from Particl Seed\n"
 until [[ "$restore" =~ ^[12]$ ]]; do
@@ -116,7 +138,7 @@ echo -e "\n\nInstalling dependencies"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 ## Update & Install dependencies
 $UPDATE
-$INSTALL $DEPENDENCY git wget unzip automake libtool curl jq
+$INSTALL $DEPENDENCY git wget unzip automake libtool jq
 # Move scripts to /usr/local/bin
 sudo rm -r /usr/local/bin/bsx* /usr/local/bin/basicswap-bash
 sudo mv -f -t /usr/local/bin/ basicswap-bash bsx*
@@ -127,6 +149,6 @@ export monerod_port=$monerod_port
 export particl_mnemonic=$particl_mnemonic
 export xmrrestoreheight=$xmrrestoreheight
 mkdir -p "$SWAP_DATADIR/venv"
-python3 -m venv "$SWAP_DATADIR/venv"
+python -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
 /usr/local/bin/bsx/activate_venv.sh

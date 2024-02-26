@@ -35,6 +35,9 @@ else
 	CURRENT_XMR_HEIGHT=$(curl https://localmonero.co/blocks/api/get_stats | jq .height)
 fi
 
+# Use Tor if we want
+enable_tor
+
 # Use the custom Monero node
 if [[ "$monerod_addr" && "$particl_mnemonic" ]]; then
 	PARTICL_MNEMONIC=$particl_mnemonic
