@@ -1,11 +1,11 @@
 #!/bin/bash
 
 ## Prompt for user input
-echo -e "\n\nThe following coins can be added (case sensitive)\nbitcoin\ndash\nfiro\nlitecoin\npivx\n"
+echo -e "\n\nThe following coins can be added (case sensitive)\nbitcoin\ndash\ndecred\nfiro\nlitecoin\npivx\nwownero\n"
 read -p 'Full name of coin to add [example: litecoin] ' addcoin
 ## Confirm
-echo -e "\nAdd $addcoin to your BasicSwap install, correct? Press any key to continue. CTRL-C to exit"
-read
+read -p $'\nAdd '$addcoin' to your BasicSwap install, correct? Press ENTER to continue. CTRL-C to exit'
+
 ## Add the coin
 if [ $addcoin = bitcoin ]; then
 	read -p 'Use --usebtcfastsync for bitcoin? [Y/n] ' btcfastsync

@@ -53,7 +53,8 @@ read -p "Enter a (new) tor control password [example: 123123] " torcontrolpass
 # Edit /etc/tor/torrc
 torhashedpass=$(tor --hash-password $torcontrolpass)
 enabledcontrol=$(echo "ControlPort 9051")
-skipcontrol=$(grep -x "$enabledcontrol" /etc/tor/torrc)
+skipcontrol=$(sudo grep -x "$enabledcontrol" /etc/tor/torrc)
+echo "Check torrc for enabled ControlPort"
 if [[ $skipcontrol ]]; then
 	# Use Existing enabled ControlPort and append HashedControlPassword
 	echo -e "# Added by basicswap-bash\nHashedControlPassword $torhashedpass" | sudo tee -a /etc/tor/torrc

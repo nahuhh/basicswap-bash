@@ -1,4 +1,4 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
 . $SWAP_DATADIR/venv/bin/activate && python -V
-/usr/local/bin/bsx/disablecoin.sh
+/usr/local/bin/bsx/removecoin.sh

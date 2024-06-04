@@ -1,15 +1,23 @@
 # basicswap-bash
-A BasicSwapDEX bash installer for Debian/Ubuntu
+A BasicSwapDEX bash installer for Debian/Ubuntu/Arch/Fedora
+User account must have sudo privileges
 
 ### Installation
+
 ```bash
-wget https://github.com/nahuhh/basicswap-bash/releases/latest/download/basicswap-bash.tar.gz
-tar xvf basicswap-bash.tar.gz
+git clone https://github.com/nahuhh/basicswap-bash -b dev
 cd basicswap-bash && ./install.sh
+cd .. && rm -rf basicswap-bash
 ```
+
+
 ### Running BasicSwapDEX
 ```
 basicswap-bash
+```
+#### Update BSX core
+```
+bsx-update
 ```
 
 #### Enable/Disable Tor [post install]
@@ -20,17 +28,17 @@ bsx-enabletor
 bsx-disabletor
 ```
 
-#### Add coins
+#### Add/remove coins
 ```
 bsx-addcoin
 ```
+```
+bsx-removecoin
+```
+
 #### Update blockchains
 ```
 bsx-upgrade-coins
-```
-#### Update BSX core
-```
-bsx-update
 ```
 
 
