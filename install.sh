@@ -20,29 +20,40 @@ $nocolor
 INSTALL=""
 UPDATE=""
 DEPENDENCY=""
+TAILS=""
+
+check_tails() {
+	if [ $USER == amnesia ]; then
+	    $green"\nDetected Tails\n";$nocolor
+	    TAILS=1
+	else
+	    $green"\nDetected Debian\n";$nocolor
+	fi
+}
+
 detect_os_arch() {
     if type -P apt > /dev/null; then
+	check_tails
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
-        DEPENDENCY="python-is-python3 python3-pip python3-venv gnupg pkg-config protobuf-compiler"
-	$green"\nDetected Debian\n";$nocolor
+        DEPENDENCY="python-is-python3 python3-pip python3-venv gnupg pkg-config"
     elif type -P dnf > /dev/null; then
         # Fedora
         INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
-        DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf protobuf-compiler"
+        DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
 	$green"\nDetected Fedora\n";$nocolor
     elif type -P pacman > /dev/null; then
         # Arch Linux
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
-        DEPENDENCY="python-pipenv gnupg protobuf pkgconf base-devel"
+        DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
 	$green"\nDetected Arch Linux\n";$nocolor
     elif type -P brew > /dev/null; then
         # MacOS
         INSTALL="brew install"
-        DEPENDENCY="python protobuf gnupg pkg-config"
+        DEPENDENCY="python gnupg pkg-config"
 	$green"\nDetected MacOS\n";$nocolor
     else
         $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
@@ -150,6 +161,7 @@ export monerod_port=$monerod_port
 export particl_mnemonic=$particl_mnemonic
 export xmrrestoreheight=$xmrrestoreheight
 export tor_on=$tor_on
+export TAILS=$TAILS
 mkdir -p "$SWAP_DATADIR/venv"
 python -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
