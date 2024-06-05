@@ -64,7 +64,7 @@ detect_os_arch() {
 detect_os_arch
 
 # Enable tor
-echo -e "\n\n[1] Tor ON\n[2] Tor OFF\n"
+echo -e "\n\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
 read -p 'Select an option: [1|2] ' tor_on
 	case $tor_on in
@@ -153,14 +153,25 @@ read -p 'Select an option [1|2]: ' l
 done
 
 ## Begin Install
-echo -e "\n\nInstalling dependencies"
+echo -e "\n\nInstalling BasicSwapDEX"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 ## Update & Install dependencies
+echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding"
+$green"$UPDATE\n$INSTALL $DEPENDENCY git wget unzip automake libtool jq\n"; $nocolor
 $UPDATE
 $INSTALL $DEPENDENCY git wget unzip automake libtool jq
-# Move scripts to /usr/local/bin
-sudo rm -r /usr/local/bin/bsx* /usr/local/bin/basicswap-bash
-sudo mv -f -t /usr/local/bin/ basicswap-bash bsx*
+
+# Quest to make trasher happy
+trasherdk=$(echo $PATH | grep $USER/.local/bin)
+if ! [[ $trasherdk ]]; then
+	mkdir -p $HOME/.local/bin
+fi
+# Move scripts to .local/bin
+if [ -d $HOME/.local/bin/bsx ]; then
+	rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
+fi
+mv -f -t $HOME/.local/bin/ basicswap-bash bsx*
+
 ## Make venv and set variables for install
 export SWAP_DATADIR=$HOME/coinswaps
 export monerod_addr=$monerod_addr
@@ -172,4 +183,4 @@ export TAILS=$TAILS
 mkdir -p "$SWAP_DATADIR/venv"
 python -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
-/usr/local/bin/bsx/activate_venv.sh
+$HOME/.local/bin/bsx/activate_venv.sh

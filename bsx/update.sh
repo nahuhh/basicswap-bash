@@ -6,8 +6,8 @@ echo "Updating basicswap-bash scripts" && sleep 1
 git clone https://github.com/nahuhh/basicswap-bash -b dev
 cd basicswap-bash
 # Move scripts
-sudo rm -rf /usr/local/bin/bsx
-sudo mv -f basic* bsx* /usr/local/bin/
+sudo rm -rf $HOME/.local/bin/bsx
+sudo mv -f basic* bsx* $HOME/.local/bin/
 # Cleanup install
 cd ..
 rm -rf basicswap-bash

@@ -30,4 +30,4 @@ read -p 'Select an option [1|2]: ' l
 done
 export SWAP_DATADIR=$HOME/coinswaps
 . $SWAP_DATADIR/venv/bin/activate && python -V
-/usr/local/bin/bsx/enabletor.sh
+$HOME/.local/bin/bsx/enabletor.sh

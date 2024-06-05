@@ -1,15 +1,24 @@
 # basicswap-bash
-A BasicSwapDEX bash installer for Debian/Ubuntu/Arch/Fedora
-User account must have sudo privileges
+A suite of bash scripts to install and manage
+BasicSwapDEX on Windows(WSL)/Debian/Ubuntu/Arch/Fedora
 
-### Installation
-
+### New Installation
 ```bash
 git clone https://github.com/nahuhh/basicswap-bash -b dev
 cd basicswap-bash && ./install.sh
 cd .. && rm -rf basicswap-bash
 ```
-
+### Update scripts from older versions
+``` bash
+cd ~/coinswaps/basicswap
+git clone https://github.com/nahuhh/basicswap-bash -b dev
+cd basicswap-bash
+mkdir -p $HOME/.local/bin
+rm -r $HOME/.local/bin/bsx
+mv -f basic* bsx* $HOME/.local/bin/
+cd .. && rm -rf basicswap-bash
+bsx-update
+```
 
 ### Running BasicSwapDEX
 ```
