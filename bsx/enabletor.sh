@@ -47,7 +47,7 @@ else
 	$INSTALL tor
 fi
 
-# Create HashesControlPassword
+# Create HashedControlPassword
 echo -e "In the next step you'll choose a password. NOTE: It will be saved in PLAIN TEXT."
 read -p "Enter a (new) tor control password [example: 123123] " torcontrolpass
 # Edit /etc/tor/torrc

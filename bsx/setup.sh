@@ -34,7 +34,7 @@ fi
 # Use Tor if we want
 enable_tor() {
 	if [[ "$tor_on" = 1 ]]; then
-		/usr/local/bin/bsx-enabletor
+		$HOME/.local/bin/bsx-enabletor
 	fi
 }
 
