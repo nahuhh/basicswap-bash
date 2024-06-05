@@ -132,9 +132,16 @@ until [[ "$l" =~ ^[12]$ ]]; do
 read -p 'Select an option [1|2]: ' l
 	case $l in
 		1)
-		read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
-		read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
-		$green"\nLook good? $monerod_addr:$monerod_port"; $nocolor
+		until [[ $checknode ]]; do
+			read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
+			read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
+			checknode=$(curl -sk http://$monerod_addr:$monerod_port/get_info)
+			if [[ $checknode ]]; then
+				$green"\nSuccessfully connected to the XMR node @ $monerod_addr:$monerod_port"; $nocolor
+			else
+				$red"\nThe node at $monerod_addr:$monerod_port is not accessible. Try again\n\n"; $nocolor
+			fi
+		done
 		;;
 		2)
 		$green"\nBasicSwapDEX will run the Monero node for you."; $nocolor
