@@ -1,4 +1,33 @@
 #!/bin/bash
+
+# Colors
+red="echo -e -n \e[31;1m"
+green="echo -e -n \e[32;1m"
+nocolor="echo -e -n \e[0m"
+
+echo -e "My BasicSwapDEX is:\n[1] Password protected\n[2] NOT password protected\n"
+until [[ "$l" =~ ^[12]$ ]]; do
+read -p 'Select an option [1|2]: ' l
+        case $l in
+                1)
+                until [[ $pass1 ]] && [[ $pass1 == $pass2 ]]; do
+                        read -sp 'Enter your BasicSwap password: ' pass1
+                        read -sp $'\nRe-enter your BasicSwap password: ' pass2
+                        if [[ $pass1 == $pass2 ]]; then
+                                export WALLET_ENCRYPTION_PWD=$pass1
+                        else
+                                $red"\nThe passwords entered don't match. Try again\n\n"; $nocolor
+                        fi
+                done
+                ;;
+                2)
+                $nocolor"\nProceeding without a password\n"
+                ;;
+                *)
+                $red"You must answer 1 or 2\n"; $nocolor
+                ;;
+        esac
+done
 export SWAP_DATADIR=$HOME/coinswaps
 . $SWAP_DATADIR/venv/bin/activate && python -V
 /usr/local/bin/bsx/removecoin.sh
