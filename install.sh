@@ -63,6 +63,12 @@ detect_os_arch() {
 
 detect_os_arch
 
+## Update & Install dependencies
+echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding"
+$green"$UPDATE\n$INSTALL $DEPENDENCY git curl wget unzip automake libtool jq\n"; $nocolor
+$UPDATE
+$INSTALL $DEPENDENCY git curl wget unzip automake libtool jq
+
 # Enable tor
 echo -e "\n\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
@@ -155,11 +161,6 @@ done
 ## Begin Install
 echo -e "\n\nInstalling BasicSwapDEX"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
-## Update & Install dependencies
-echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding"
-$green"$UPDATE\n$INSTALL $DEPENDENCY git wget unzip automake libtool jq\n"; $nocolor
-$UPDATE
-$INSTALL $DEPENDENCY git wget unzip automake libtool jq
 
 # Quest to make trasher happy
 trasherdk=$(echo $PATH | grep $USER/.local/bin)

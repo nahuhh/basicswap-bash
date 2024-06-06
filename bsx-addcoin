@@ -5,7 +5,7 @@ red="echo -e -n \e[31;1m"
 green="echo -e -n \e[32;1m"
 nocolor="echo -e -n \e[0m"
 
-echo -e "My BasicSwapDEX is:\n[1] Password protected\n[2] NOT password protected\n"
+echo -e "BasicSwapDEX is currently:\n[1] Password protected\n[2] NOT password protected\n"
 until [[ "$l" =~ ^[12]$ ]]; do
 read -p 'Select an option [1|2]: ' l
 	case $l in
