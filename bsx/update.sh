@@ -9,14 +9,16 @@ cd basicswap-bash
 rm -rf $HOME/.local/bin/bsx
 mv -f basic* bsx* $HOME/.local/bin/
 # Cleanup install
-cd ..
+cd $SWAP_DATADIR/basicswap
 rm -rf basicswap-bash
 
 echo "Updating BasicSwapDEX" && sleep 1
 # Delete dangling build folder. Same as --no-cache for docker
-rm -rf ~/coinswaps/basicswap/build
-# Fix conflicts from force-pushes
-git reset HEAD~5 --hard
+rm -rf $SWAP_DATADIR/basicswap/build
+# Switch to new repo: basicswap/basicswap
+git remote set-url origin https://github.com/basicswap/basicswap
+# Fix conflicts from force-pushes and rebase
+git reset HEAD~50 --hard
 # Pull repo
 git pull
 # Install
