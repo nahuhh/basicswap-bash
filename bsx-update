@@ -1,4 +1,11 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
 . $SWAP_DATADIR/venv/bin/activate && python -V
-$HOME/.local/bin/bsx/update.sh
+
+if [ -f /usr/local/bin/bsx/update.sh ]; then
+	/usr/local/bin/bsx/update.sh
+	cd /usr/local/bin
+	sudo rm -rf basicswap-bash bsx*
+else
+	$HOME/.local/bin/bsx/update.sh
+fi
