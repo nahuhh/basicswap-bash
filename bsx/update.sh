@@ -18,7 +18,7 @@ rm -rf $SWAP_DATADIR/basicswap/build
 # Switch to new repo: basicswap/basicswap
 git remote set-url origin https://github.com/basicswap/basicswap
 # Fix conflicts from force-pushes and rebase
-git reset HEAD~50 --hard
+git checkout master
 # Pull repo
 git pull
 # Install
