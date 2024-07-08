@@ -61,6 +61,7 @@ detect_os_arch() {
     fi
 }
 
+
 detect_os_arch
 
 ## Update & Install dependencies
@@ -172,6 +173,12 @@ if [ -d $HOME/.local/bin/bsx ]; then
 	rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
 mv -f -t $HOME/.local/bin/ basicswap-bash bsx*
+# Enable .profile detection on XFCE
+xfce_check=$(echo $XDG_CURRENT_DESKTOP | grep XFCE)
+xsessionrc_check=$(cat ~/.xsessionrc | grep '. ~/.profile')
+if [[ $xfce_chek ]] && [[ -z $xsessionrc_check ]]; then
+	echo '. ~/.profile' | tee -a ~/.xsessionrc
+fi
 
 ## Make venv and set variables for install
 export SWAP_DATADIR=$HOME/coinswaps
