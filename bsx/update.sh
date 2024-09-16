@@ -3,7 +3,7 @@ cd $SWAP_DATADIR/basicswap
 
 # Download updated scripts
 echo "Updating basicswap-bash scripts" && sleep 1
-git clone https://github.com/nahuhh/basicswap-bash
+git clone https://github.com/nahuhh/basicswap-bash -b dev
 cd basicswap-bash
 
 # Move scripts
