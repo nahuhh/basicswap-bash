@@ -1,5 +1,23 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
+
+# Colors
+red="echo -e -n \e[31;1m"
+green="echo -e -n \e[32;1m"
+nocolor="echo -e -n \e[0m"
+
+# Check if basicswap is running
+if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
+    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
+    if [[ $bsx_pid ]]; then
+        bsx_run=$(pidof particld | grep $bsx_pid)
+        if [[ $bsx_run ]]; then
+            $red"\nError: BasicSwapDEX is running.\n"; $nocolor
+            exit
+        fi
+    fi
+fi
+
 . $SWAP_DATADIR/venv/bin/activate && python -V
 
 if [ -f /usr/local/bin/bsx/update.sh ]; then

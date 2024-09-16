@@ -1,5 +1,21 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
-python3 -m venv "$SWAP_DATADIR/venv"
+
+# Colors
+red="echo -e -n \e[31;1m"
+green="echo -e -n \e[32;1m"
+nocolor="echo -e -n \e[0m"
+
+if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
+    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
+    if [[ $bsx_pid ]]; then
+        bsx_run=$(pidof particld | grep $bsx_pid)
+        if [[ $bsx_run ]]; then
+            $red"\nError: BasicSwapDEX is already running.\n"; $nocolor
+            exit
+        fi
+    fi
+fi
+
 . $SWAP_DATADIR/venv/bin/activate && python -V
 $HOME/.local/bin/bsx/startup.sh

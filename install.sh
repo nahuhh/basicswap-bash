@@ -1,9 +1,22 @@
 #/bin/bash
+export SWAP_DATADIR=$HOME/coinswaps
 
 # Colors
 red="echo -e -n \e[31;1m"
 green="echo -e -n \e[32;1m"
 nocolor="echo -e -n \e[0m"
+
+# Check if basicswap is running
+if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
+    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
+    if [[ $bsx_pid ]]; then
+        bsx_run=$(pidof particld | grep $bsx_pid)
+        if [[ $bsx_run ]]; then
+            $red"\nError: BasicSwapDEX is already installed.\n"; $nocolor
+            exit
+        fi
+    fi
+fi
 
 # Title Bar
 $green "\n"
@@ -187,7 +200,6 @@ if [[ $xfce_chek ]]; then
 fi
 
 ## Make venv and set variables for install
-export SWAP_DATADIR=$HOME/coinswaps
 export monerod_addr=$monerod_addr
 export monerod_port=$monerod_port
 export particl_mnemonic=$particl_mnemonic
