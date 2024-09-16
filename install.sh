@@ -169,15 +169,21 @@ if ! [[ $trasherdk ]]; then
 	mkdir -p $HOME/.local/bin
 fi
 # Move scripts to .local/bin
-if [ -d $HOME/.local/bin/bsx ]; then
+if [[ -d $HOME/.local/bin/bsx ]]; then
 	rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
 mv -f -t $HOME/.local/bin/ basicswap-bash bsx*
 # Enable .profile detection on XFCE
 xfce_check=$(echo $XDG_CURRENT_DESKTOP | grep XFCE)
-xsessionrc_check=$(cat ~/.xsessionrc | grep '. ~/.profile')
-if [[ $xfce_chek ]] && [[ -z $xsessionrc_check ]]; then
-	echo '. ~/.profile' | tee -a ~/.xsessionrc
+if [[ $xfce_chek ]]; then
+    if [[ -f $HOME/.xsessionrc ]]; then
+        xsessionrc_check=$(cat ~/.xsessionrc | grep '. ~/.profile')
+        if [[ -z $xsessionrc_check ]]; then
+            echo '. ~/.profile' | tee -a ~/.xsessionrc
+        fi
+    else
+        echo '. ~/.profile' | tee -a ~/.xsessionrc
+    fi
 fi
 
 ## Make venv and set variables for install
