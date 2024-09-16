@@ -42,17 +42,13 @@ enable_tor() {
 if   [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
-	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
-	# Add coins and use a remote monero node
 	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port \
-	basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
 elif [[ "$particl_mnemonic" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
-	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
-	# Add coins using local nodes
-	basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
 elif [[ "$monerod_addr" ]]; then
 	# Setup new install and use a remote monero node
