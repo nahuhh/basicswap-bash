@@ -30,4 +30,4 @@ $SWAP_DATADIR/venv/bin/pip install .
 $HOME/.local/bin/bsx/auto_coinupd8.sh
 
 # Cleanup
-rm -rf basicswap-bash core_versions
+rm -rf basicswap-bash
