@@ -7,10 +7,8 @@ nocolor="echo -e -n \e[0m"
 
 ## Download & Install coincurve stuff
 cd $SWAP_DATADIR
-wget -O coincurve-anonswap.zip https://github.com/tecnovert/coincurve/archive/refs/tags/anonswap_v0.2.zip
-unzip -d coincurve-anonswap coincurve-anonswap.zip
-mv -f ./coincurve-anonswap/*/{.,}* ./coincurve-anonswap || true
-cd $SWAP_DATADIR/coincurve-anonswap
+git clone https://github.com/basicswap/coincurve -b basicswap_v0.2 coincurve-basicswap
+cd $SWAP_DATADIR/coincurve-basicswap
 $SWAP_DATADIR/venv/bin/pip install .
 
 ## Clone basicswap git
@@ -18,6 +16,7 @@ cd $SWAP_DATADIR
 git clone https://github.com/basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
 ## Install basicswap
+$SWAP_DATADIR/venv/bin/pip install wheel
 $SWAP_DATADIR/venv/bin/pip install .
 
 ## Decide a source for Monero's restore height
@@ -63,4 +62,5 @@ else
 	enable_tor
 fi
 
-$green"Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n"; $nocolor
+$green"Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n\nYou'll need to open a new login shell (a new terminal window) for the start scripts to be recognized.\n";$nocolor
+$red"XFCE will require you to logout / login";$nocolor
