@@ -79,9 +79,9 @@ detect_os_arch
 
 ## Update & Install dependencies
 echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding"
-$green"$UPDATE\n$INSTALL $DEPENDENCY git curl wget unzip automake libtool jq\n"; $nocolor
+$green"$UPDATE\n$INSTALL $DEPENDENCY curl automake libtool jq\n"; $nocolor
 $UPDATE
-$INSTALL $DEPENDENCY git curl wget unzip automake libtool jq
+$INSTALL $DEPENDENCY curl automake libtool jq
 
 # Enable tor
 echo -e "\n\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
