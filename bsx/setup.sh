@@ -9,9 +9,10 @@ nocolor="printf \e[0m"
 cd $SWAP_DATADIR
 if [[ -d basicswap ]]; then
     cd $SWAP_DATADIR/basicswap
+    git switch dev
     git pull || { $red"Failed to pull repo. Installation aborted"; exit; }
 else
-    git clone https://github.com/basicswap/basicswap || { $red"Failed to clone repo. Please run the installer again"; exit; }
+    git clone https://github.com/basicswap/basicswap -b dev || { $red"Failed to clone repo. Please run the installer again"; exit; }
     cd $SWAP_DATADIR/basicswap
 fi
 
