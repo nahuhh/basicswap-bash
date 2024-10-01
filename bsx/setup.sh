@@ -13,7 +13,7 @@ $SWAP_DATADIR/venv/bin/pip install .
 
 ## Clone basicswap git
 cd $SWAP_DATADIR
-git clone https://github.com/basicswap/basicswap
+git clone https://github.com/basicswap/basicswap -b dev
 cd $SWAP_DATADIR/basicswap
 ## Install basicswap
 $SWAP_DATADIR/venv/bin/pip install wheel
