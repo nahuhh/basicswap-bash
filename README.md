@@ -45,6 +45,11 @@ bsx-addcoin
 bsx-removecoin
 ```
 
+### BONUS placeorders
+This is a POC for placing new orders. YMMV
+```
+bsx-placeorder
+```
 
 A small donation goes a long way. Thanks
 - ofrnxmr
