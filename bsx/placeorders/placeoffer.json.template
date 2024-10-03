@@ -1,0 +1,28 @@
+{
+    "offers": [
+        {
+            "enabled": true,
+            "coin_from": "COIN_TO_SELL",
+            "coin_to": "COIN_TO_BUY",
+            "amount": AMOUNT,
+            "amount_step": INCREMENT,
+            "minrate": RATE,
+            "ratetweakpercent": PERCENT,
+            "amount_variable": true,
+            "address": "-1",
+            "name": "GUI Offer",
+            "min_coin_from_amt": -1,
+            "min_swap_amount": MIN_SWAP,
+            "offer_valid_seconds": 14400
+        }
+    ],
+    "bids": [],
+    "stealthex": [],
+    "min_seconds_between_offers": 10,
+    "max_seconds_between_offers": 10,
+    "min_seconds_between_bids": 10,
+    "max_seconds_between_bids": 10,
+    "num_enabled_offers": 1,
+    "num_enabled_bids": 0,
+    "num_enabled_swaps": 0
+}

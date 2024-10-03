@@ -1,0 +1,25 @@
+#!/bin/bash
+export SWAP_DATADIR=$HOME/coinswaps
+
+# Colors
+red="echo -e -n \e[31;1m"
+green="echo -e -n \e[32;1m"
+nocolor="echo -e -n \e[0m"
+
+# Check if basicswap is running
+if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
+    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
+    bsx_run=$(pidof particld | grep $bsx_pid)
+    if ! [[ $bsx_run ]]; then
+        $red"\nError: BasicSwapDEX must be running.\n"; $nocolor
+        exit
+    fi
+else
+    $red"\nError: BasicSwapDEX must be running.\n"; $nocolor
+    exit
+fi
+
+mv $HOME/.local/bin/bsx/placeorders/* $SWAP_DATADIR/basicswap/scripts/
+cd $SWAP_DATADIR/basicswap/scripts/
+
+./placeorders.sh

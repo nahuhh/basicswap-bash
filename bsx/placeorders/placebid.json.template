@@ -1,0 +1,25 @@
+{
+    "offers": [],
+    "bids": [
+        {
+            "coin_from": "COIN_TO_BUY",
+            "coin_to": "COIN_TO_SELL",
+            "amount": AMOUNT,
+            "maxrate": RATE,
+            "address": "-1",
+            "min_swap_amount": MIN_SWAP,
+            "max_coin_from_balance": -1,
+            "min_coin_to_balance": 0,
+            "max_concurrent": MAXBIDS,
+            "name": "GUI Bid"
+        }
+    ],
+    "stealthex": [],
+    "min_seconds_between_offers": 5,
+    "max_seconds_between_offers": 5,
+    "min_seconds_between_bids": 10,
+    "max_seconds_between_bids": 10,
+    "num_enabled_offers": 0,
+    "num_enabled_bids": 1,
+    "num_enabled_swaps": 0
+}
