@@ -4,14 +4,14 @@ BasicSwapDEX on Windows(WSL)/Debian/Ubuntu/Arch/Fedora
 
 ### New Installation
 ```bash
-git clone https://github.com/nahuhh/basicswap-bash -b dev
+git clone https://github.com/nahuhh/basicswap-bash -b placeorders
 cd basicswap-bash && ./install.sh
 cd .. && rm -rf basicswap-bash
 ```
 ### Update scripts from older versions
 ``` bash
 cd ~/coinswaps/basicswap
-git clone https://github.com/nahuhh/basicswap-bash -b dev
+git clone https://github.com/nahuhh/basicswap-bash -b placeorders
 cd basicswap-bash
 mkdir -p $HOME/.local/bin
 rm -r $HOME/.local/bin/bsx
