@@ -177,27 +177,31 @@ echo -e "\n\nInstalling BasicSwapDEX"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 
 # Quest to make trasher happy
-trasherdk=$(echo $PATH | grep $USER/.local/bin)
+addpath='PATH="$HOME/.local/bin:$PATH"'
+trasherdk=$(echo $PATH | grep .local/bin)
 if ! [[ $trasherdk ]]; then
-	mkdir -p $HOME/.local/bin
+    mkdir -p $HOME/.local/bin
+
+    # Bash
+    if [[ -f $HOME/.bashrc ]]; then
+        echo "export $addpath" | tee -a $HOME/.bashrc
+    fi
+    # Zsh
+    if [[ -f $HOME/.zshrc ]]; then
+        echo "export $addpath" | tee -a $HOME/.zshrc
+    fi
+    # xfce4
+    if [[ -f $HOME/.xsessionrc ]]; then
+        echo "export $addpath" | tee -a $HOME/.xsessionrc
+    fi
+
 fi
+
 # Move scripts to .local/bin
 if [[ -d $HOME/.local/bin/bsx ]]; then
-	rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
+    rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
 mv -f -t $HOME/.local/bin/ basicswap-bash bsx*
-# Enable .profile detection on XFCE
-xfce_check=$(echo $XDG_CURRENT_DESKTOP | grep XFCE)
-if [[ $xfce_chek ]]; then
-    if [[ -f $HOME/.xsessionrc ]]; then
-        xsessionrc_check=$(cat ~/.xsessionrc | grep '. ~/.profile')
-        if [[ -z $xsessionrc_check ]]; then
-            echo '. ~/.profile' | tee -a ~/.xsessionrc
-        fi
-    else
-        echo '. ~/.profile' | tee -a ~/.xsessionrc
-    fi
-fi
 
 ## Make venv and set variables for install
 export monerod_addr=$monerod_addr
@@ -206,7 +210,6 @@ export particl_mnemonic=$particl_mnemonic
 export xmrrestoreheight=$xmrrestoreheight
 export tor_on=$tor_on
 export TAILS=$TAILS
-mkdir -p "$SWAP_DATADIR/venv"
 python -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
 $HOME/.local/bin/bsx/activate_venv.sh
