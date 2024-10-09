@@ -48,8 +48,8 @@ coin_prompt_sell() {
 }
 coin() {
 	coin=""
-	echo -e "\n[1] Bitcoin\n[2] Monero\n[3] Litecoin\n[4] Firo\n[5] Dash\n[6] PIVX\n[7] Particl\n[8] Wownero\n"
-	until [[ $coin =~ ^[1-8]$ ]]; do
+	echo -e "\n[1] Bitcoin\n[2] Monero\n[3] Litecoin\n[4] Firo\n[5] Dash\n[6] Decred\n[7] PIVX\n[8] Particl\n[9] Wownero\n"
+	until [[ $coin =~ ^[1-9]$ ]]; do
 		read -p 'Select an option: ' coin
 		case $coin in
 			1) COIN="bitcoin"
@@ -72,19 +72,23 @@ coin() {
 			   coinname="Dash"
 			   coinsymbol="DASH"
 			;;
-			6) COIN="pivx"
+			6) COIN="dcr"
+			   coinname="Decred"
+			   coinsymbol="DCR"
+			;;
+			7) COIN="pivx"
 			   coinname="PIVX"
 			   coinsymbol="PIVX"
 			;;
-			7) COIN="particl"
+			8) COIN="particl"
 			   coinname="Particl"
 			   coinsymbol="PART"
 			;;
-			8) COIN="wownero"
+			9) COIN="wownero"
 			   coinname="Wownero"
 			   coinsymbol="WOW"
 			;;
-			*) $red "\nYou must answer 1-8\n"; $nc
+			*) $red "\nYou must answer 1-9\n"; $nc
 			;;
 		esac
 	done
@@ -106,13 +110,16 @@ book_min() {
 	elif [[ $coin = 5 ]]; then # DASH
 		OB_MIN=1.0000
 		MIN_SWAP=0.2000
-	elif [[ $coin = 6 ]]; then # PIVX
+	elif [[ $coin = 6 ]]; then # DECRED
+		OB_MIN=1.0000
+		MIN_SWAP=0.2000
+	elif [[ $coin = 7 ]]; then # PIVX
 		OB_MIN=50.0000
 		MIN_SWAP=10.0000
-	elif [[ $coin = 7 ]]; then # PARTICL
+	elif [[ $coin = 8 ]]; then # PARTICL
 		OB_MIN=50.0000
 		MIN_SWAP=10.0000
-	elif [[ $coin = 8 ]]; then # WOWNERO
+	elif [[ $coin = 9 ]]; then # WOWNERO
 		OB_MIN=50.0000
 		MIN_SWAP=10.0000
 	fi
@@ -134,7 +141,7 @@ set_fiat() {
 		4) FIAT=AUD
 		   fiat=aud
 		;;
-		5) read -p 'Please enter the 3 character currency code [example: jpy] ' FIAT
+		5) read -p 'Please enter the lowecase 3 character currency code [example: jpy] ' FIAT
 		   fiat=$FIAT
 		;;
 		*) FIAT=USD
@@ -147,10 +154,10 @@ coin_price() {
 	echo -e "\nCurrent Market Rates are.."
 	YOUR_FIAT=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=$THEIR_COIN,$YOUR_COIN&vs_currencies=$fiat" | jq -r ".$YOUR_COIN.$fiat")
 	THEIR_FIAT=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=$THEIR_COIN,$YOUR_COIN&vs_currencies=$fiat" | jq -r ".$THEIR_COIN.$fiat")
-	TAKER_RATE=$(echo "scale=8;( $THEIR_FIAT / $YOUR_FIAT )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
-	MAKER_RATE=$(echo "scale=8;(1 / $TAKER_RATE /1)" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+	TAKER_RATE=$(echo $THEIR_FIAT $YOUR_FIAT | awk '{ printf "%.8f\n", $1 / $2 }' )
+	MAKER_RATE=$(echo $TAKER_RATE | awk '{ printf "%.8f\n", 1 / $1 }')
 	$cy"$THEIR_FIAT $FIAT$nc2/$grn2$theircoin$nc2 which is $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n"
-	$cy"$YOUR_FIAT $FIAT$nc2/$red2$yourcoin$nc2 which is $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n";
+	$cy"$YOUR_FIAT $FIAT$nc2/$red2$yourcoin$nc2 which is $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n"
 }
 
 buy_sell() {
@@ -159,60 +166,60 @@ buy_sell() {
 		read -p 'Select an option: ' BUYORSELL
 		case $BUYORSELL in
 			1) read -p "How much $theircapital do you want to BUY? [example: 1] " AMOUNT
-			   echo -e "\n4. Rate you will pay:"
-			   echo -e "[1] LIMIT: Specific Crypto Rate $red2$yourcoin$nc2/$grn2$theircoin$nc2\n[2] LIMIT: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+/- CUSTOM Percent$nc2\n[3] LIMIT: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n[4] MARKET +$PERCENT%: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+ $PERCENT%$nc2\n[ENTER] LIMIT: Specific Fiat Rate $cy2$FIAT$nc2/$grn2$theircoin$nc2"
+			   $cy "\n4. Rate you will pay:\n";$nc
+			   echo -e "[1] CUSTOM RATE: Specific Crypto Rate $red2$yourcoin$nc2/$grn2$theircoin$nc2\n[2] CUSTOM PERCENT: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n[4] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+ $PERCENT%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to pay"
 			   read -p 'Select an option: ' RATESEL
 			   case $RATESEL in
 				1) read -p $"At what rate would you like to Pay? [example: $TAKER_RATE] " RATE
-				   PRICE=$(echo "scale=2;( $YOUR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   PRICE=$(echo $YOUR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				   PERCENT=0
 				;;
 				2) read -p 'Pay this much % above or below market [example: [0.5|-0.5] ' PERCENT
-				   RATE=$(echo "scale=8;( $TAKER_RATE * ( $PERCENT / 100 + 1)/1)" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
-				   PRICE=$(echo "scale=2;( $YOUR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   RATE=$(echo $TAKER_RATE $PERCENT | awk '{ printf "%.8f\n", ( $1 * ( $2 / 100 + 1 ))}')
+				   PRICE=$(echo $YOUR_FIAT * $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				;;
 				3) RATE=$TAKER_RATE
 				   PRICE=$THEIR_FIAT
 				   PERCENT=0
 				;;
-				4) RATE=$(echo "scale=9;( $TAKER_RATE * ( $PERCENT / 100 + 1)/1)" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
-				   PRICE=$(echo "scale=2;( $YOUR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				4) RATE=$(echo $TAKER_RATE $PERCENT | awk '{ printf "%.8f\n", ( $1 * ( $2 / 100 + 1 ))}')
+				   PRICE=$(echo $YOUR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				;;
 				*) read -p $"Enter specific price in $FIAT to PAY? [example: "$THEIR_FIAT"] " PRICE
-				   RATE=$(echo "scale=8;( $PRICE / $YOUR_FIAT )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   RATE=$(echo $PRICE $YOUR_FIAT | awk '{ printf "%.8f\n", $1 / $2 }')
 				   PERCENT=0
 				;;
 			   esac
-			   MAKER_RATE=$(echo "scale=8;( 1 / $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+			   MAKER_RATE=$(echo $RATE | awk '{ printf "%.8f\n", 1 / $1 }')
 			   echo -e "\nPaying: $red2 $PRICE$FIAT$nc2 which is $red2($RATE $yourcoin$nc2/$grn2$theircoin$nc2)"
 			   echo -e "Rate to be paid: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n"
 			;;
 			2) read -p "How much YOUR $yourcapital do you want to SELL [example: 1] " AMOUNT
-			   echo -e "\n4. Rate to charge:\n"
-			   echo -e "[1] LIMIT: Specific Crypto Rate $grn2$theircoin$nc2/$red2$yourcoin$nc2\n[2] LIMIT: $grn2$MAKER_RATE  $theircoin$nc2/$red2$yourcoin $cy2+/- CUSTOM Percent$nc2\n[3] LIMIT: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n[4] MARKET +$PERCENT%: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+ $PERCENT%$nc2\n[ENTER] LIMIT: Specific rate $cy2$FIAT$nc2/$red2$yourcoin$nc2"
+			   $cy "\n4. Rate to charge:\n";$nc
+			   echo -e "[1] CUSTOM: Specific Crypto Rate $grn2$theircoin$nc2/$red2$yourcoin$nc2\n[2] CUSTOM: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n[4] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+ $PERCENT%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to charge"
 			   read -p 'Select an option: ' RATESEL
 			   case $RATESEL in
 				1) read -p $"Enter specific rate to Charge? [example: $MAKER_RATE] " RATE
-				   PRICE=$(echo "scale=2;( $THEIR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   PRICE=$(echo $THEIR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				   PERCENT=0
 				;;
-				2) read -p 'Charge this much % above or below market [example: [0.5|-0.5] ' PERCENT
-				   RATE=$(echo "scale=8;( $MAKER_RATE * ( $PERCENT / 100 + 1)/1)" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
-				   PRICE=$(echo "scale=2;( $THEIR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				2) read -p 'Charge this much percent above market [example: [0.5 or -0.5] ] ' PERCENT
+				   RATE=$(echo $MAKER_RATE $PERCENT | awk '{ printf "%.8f\n", ( $1 * ( $2 / 100 + 1 ))}')
+				   PRICE=$(echo $THEIR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				;;
 				3) RATE=$MAKER_RATE
-				   PRICE=$(echo "scale=8;( $THEIR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   PRICE=$(echo $THEIR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				   PERCENT=0
 				;;
-				4) RATE=$(echo "scale=8;( $MAKER_RATE * ( $PERCENT / 100 + 1)/1)" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
-				   PRICE=$(echo "scale=8;( $THEIR_FIAT * $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				4) RATE=$(echo $MAKER_RATE $PERCENT | awk '{ printf "%.8f\n", ( $1 * ( $2 / 100 + 1 ))}')
+				   PRICE=$(echo $THEIR_FIAT $RATE | awk '{ printf "%.2f\n", $1 * $2 }')
 				;;
 				*) read -p $"Enter specific price in $FIAT to Charge? [example: "$YOUR_FIAT"] " PRICE
-				   RATE=$(echo "scale=8;( $PRICE / $THEIR_FIAT )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+				   RATE=$(echo $PRICE $THEIR_FIAT | awk '{ printf "%.8f\n", $1 / $2 }')
 				   PERCENT=0
 				;;
 				esac
-			   TAKER_RATE=$(echo "scale=8;(1 / $RATE )" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+			   TAKER_RATE=$(echo $RATE | awk '{ printf "%.8f\n", 1 / $1 }')
 			   echo -e "Selling at $PRICE$FIAT which is a rate of $grn2$RATE $theircoin$nc2/$red2$yourcoin$nc2"
 			;;
 			*) $red "\nYou must answer 1 or 2\n"; $nc
@@ -224,7 +231,7 @@ buy_sell() {
 # TODO // ENABLE SPLIT ORDERS
 split_orders() {
 	if [ $ALLOW_SPLIT_ORDERS = true ]; then
-		MIN_SWAP=$(echo "scale=0;( $AMOUNT / $MAXBIDS )/1" | bc)
+		MIN_SWAP=$(echo $AMOUNT $MAXBIDS | awk '{ printf "%.0f\n", $1 / $2 }')
 		echo -e "$cy2#TODO$nc2 Splitting into multiple bids if necessary. $red2$MAXBIDS$nc2 tx at most"
 	else
 		MIN_SWAP=$AMOUNT
@@ -235,7 +242,7 @@ split_orders() {
 
 apply_config() {
 	# Convert amount
-	MIN_TAKER=$(echo "scale=8;( $MIN_SWAP * $MAKER_RATE )/1" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+	MIN_TAKER=$(echo $MIN_SWAP $MAKER_RATE | awk '{ printf "%.8f\n", $1 * $2 }')
 	sed -i -z "s/MIN_SWAP/$MIN_TAKER/" $taker
 	sed -i -z "s/MIN_SWAP/$MIN_SWAP/" $maker
 	sed -i -z "s/COIN_TO_SELL/$yourcapital/" $taker $maker
@@ -245,7 +252,8 @@ apply_config() {
 	echo -e "\nMinumum amt per swap	= $grn2$MIN_TAKER $theircoin$nc2"
 	echo -e "			= $red2$MIN_SWAP $yourcoin$nc2\n"
 	if [[ $BUYORSELL = 1 ]]; then
-		MAKERAMOUNT=$(echo "scale=8;( $AMOUNT / $MAKER_RATE )/1" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+		MAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 / $2 }')
+		OB_AMOUNT=$MAKERAMOUNT
 		echo -e "Outgoing: $red2$MAKERAMOUNT $yourcoin$nc2"
 		echo -e "Incoming: $grn2~$AMOUNT $theircoin$nc2"
 		sed -i -z "s/AMOUNT/$MAKERAMOUNT/g" $maker
@@ -253,7 +261,8 @@ apply_config() {
 		sed -i -z "s/RATE/$RATE/" $taker
 		sed -i -z "s/AMOUNT/$AMOUNT/g" $taker
 	else
-		TAKERAMOUNT=$(echo "scale=8;( $AMOUNT * $MAKER_RATE )/1" | bc | sed -e 's/^-\./-0./' -e 's/^\./0./')
+		TAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 * $2 }')
+		OB_AMOUNT=$AMOUNT
 		echo -e "Outgoing: $red2$AMOUNT $yourcoin$nc2"
 		echo -e "Incoming: $grn2~$TAKERAMOUNT $theircoin$nc2"
 		sed -i -z "s/AMOUNT/$TAKERAMOUNT/g" $taker
@@ -275,12 +284,12 @@ check_bids() {
 	FOUNDBID=$(python createoffers.py --configfile $taker --statefile $state --port=$PORT --oneshot --debug | grep "New bid")
  	if [[ $FOUNDBID ]]; then
 		$grn"Placed bid successfully! Check BasicSwapDEX to confirm\n";$nc
-	elif [[ $AMOUNT < $OB_MIN && -z $FOUNDBID ]]; then
+	elif [[ $OB_AMOUNT < $OB_MIN && -z $FOUNDBID ]]; then
 		echo -e "Checking for a matching offer"
 		echo -e "No matching offers found $red2:@ !!!$nc2\nBid quantity too$red2 low$nc2 to post to order book.\nTrying again in 30 seconds"
 		sleep 2
 		revert_config
-		sleep 30
+		sleep 28
 		apply_config
 		$cy"Rechecking bids\n";$nc
 		recheck_bids
@@ -322,7 +331,7 @@ recheck_bids() {
 # Pull Market rate
 	coin_price
 	buy_sell
-	# split_orders
+	split_orders
 	book_min
 
 #3. Attempt bid / Post offer
