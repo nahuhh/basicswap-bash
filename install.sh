@@ -63,9 +63,16 @@ detect_os_arch() {
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
 	$green"\nDetected Arch Linux\n";$nocolor
-    elif type -P brew > /dev/null; then
-        # MacOS
-        INSTALL="brew install"
+    elif [[ $(uname -s) = "Darwin" ]]; then
+	# MacOS
+	export MACOS=1
+	if type -P brew > /dev/null; then
+	    $green"Homebrew is installed\n";$nc
+	    INSTALL="brew install"
+	else
+	    $green"Installing Homebrew\n";$nc
+	    INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
+	fi
         DEPENDENCY="python gnupg pkg-config"
 	$green"\nDetected MacOS\n";$nocolor
     else
@@ -73,7 +80,6 @@ detect_os_arch() {
 	exit
     fi
 }
-
 
 detect_os_arch
 

@@ -15,6 +15,10 @@ $SWAP_DATADIR/venv/bin/pip install .
 cd $SWAP_DATADIR
 git clone https://github.com/basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
+## Macos
+if [[ $MACOS ]]; then
+    $SWAP_DATADIR/venv/bin/pip install certifi
+fi
 ## Install basicswap
 $SWAP_DATADIR/venv/bin/pip install wheel
 $SWAP_DATADIR/venv/bin/pip install .
