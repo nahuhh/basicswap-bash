@@ -18,6 +18,7 @@ if [[ $MACOS ]]; then
     $SWAP_DATADIR/venv/bin/pip install certifi
 fi
 ## Install basicswap
+$SWAP_DATADIR/venv/bin/pip install --require-hashes -r requirements.txt
 $SWAP_DATADIR/venv/bin/pip install .
 
 ## Decide a source for Monero's restore height
