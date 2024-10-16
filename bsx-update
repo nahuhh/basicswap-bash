@@ -25,5 +25,20 @@ if [ -f /usr/local/bin/bsx/update.sh ]; then
 	cd /usr/local/bin
 	sudo rm -rf basicswap-bash bsx*
 else
+	cd $SWAP_DATADIR/basicswap
+
+	# Download updated scripts
+	echo "Updating basicswap-bash scripts" && sleep 1
+	git clone https://github.com/nahuhh/basicswap-bash
+	cd basicswap-bash
+
+	# Move scripts
+	rm -rf $HOME/.local/bin/bsx
+	mv -f basic* bsx* $HOME/.local/bin/
+
+	# Copy core_versions to basicswap folder
+	mv core_versions $SWAP_DATADIR/basicswap/core_versions
+
+	# Update BasicSwap, coincurve and coin cores
 	$HOME/.local/bin/bsx/update.sh
 fi

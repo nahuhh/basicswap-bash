@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
-
 SWAP_DATADIR=$HOME/coinswaps
+
 echo "Checking for Coin updates" && sleep 1
 
 if [[ -d $SWAP_DATADIR/bin/bitcoin ]]; then
