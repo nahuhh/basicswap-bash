@@ -67,4 +67,4 @@ else
 fi
 
 $green"Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n\nYou'll need to open a new login shell (a new terminal window) for the start scripts to be recognized.\n";$nocolor
-$red"XFCE will require you to logout / login";$nocolor
+$red"You may have to logout / login or open a new terminal window for the commands to be detected\n";$nocolor
