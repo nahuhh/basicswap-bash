@@ -185,8 +185,12 @@ read -p 'Press Enter to continue, or CTRL-C to exit.'
 # Quest to make trasher happy
 addpath='PATH="$HOME/.local/bin:$PATH"'
 trasherdk=$(echo $PATH | grep .local/bin)
-if ! [[ $trasherdk ]]; then
+
+if [[ ! -d $HOME/.local/bin ]]; then
     mkdir -p $HOME/.local/bin
+fi
+
+if [[ -z $trasherdk ]]; then
 
     # Bash
     if [[ -f $HOME/.bashrc ]]; then
