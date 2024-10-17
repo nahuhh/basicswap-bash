@@ -5,18 +5,7 @@ echo "Updating BasicSwapDEX" && sleep 1
 # Delete dangling build folder. Same as --no-cache for docker
 rm -rf $SWAP_DATADIR/basicswap/build
 
-# Coincurve
-cd $SWAP_DATADIR
-if [[ -d coincurve-basicswap ]]; then
-    cd coincurve-basicswap
-    git fetch
-    git checkout basicswap_v$COINCURVE
-else
-    git clone https://github.com/basicswap/coincurve -b basicswap_v$COINCURVE coincurve-basicswap && cd $_
-fi
-$SWAP_DATADIR/venv/bin/pip install .
-
-# BasicSwap
+# BasicSwap, coincurve, and dependencies
 # Switch to new repo: basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
 git remote set-url origin https://github.com/basicswap/basicswap
@@ -24,6 +13,7 @@ git remote set-url origin https://github.com/basicswap/basicswap
 git pull
 
 # Update BasicSwap
+$SWAP_DATADIR/venv/bin/pip install -r requirements.txt --require-hashes
 $SWAP_DATADIR/venv/bin/pip install .
 
 # Update Coin Cores

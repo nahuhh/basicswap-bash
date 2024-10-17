@@ -5,22 +5,18 @@ red="echo -e -n \e[31;1m"
 green="echo -e -n \e[32;1m"
 nocolor="echo -e -n \e[0m"
 
-## Download & Install coincurve stuff
-cd $SWAP_DATADIR
-git clone https://github.com/basicswap/coincurve -b basicswap_v0.2 coincurve-basicswap
-cd $SWAP_DATADIR/coincurve-basicswap
-$SWAP_DATADIR/venv/bin/pip install .
-
 ## Clone basicswap git
 cd $SWAP_DATADIR
 git clone https://github.com/basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
+
 ## Macos
 if [[ $MACOS ]]; then
     $SWAP_DATADIR/venv/bin/pip install certifi
 fi
-## Install basicswap
-$SWAP_DATADIR/venv/bin/pip install wheel
+
+## Install basicswap, coincurve, and pip dependencies
+$SWAP_DATADIR/venv/bin/pip install -r requirements.txt --require-hashes
 $SWAP_DATADIR/venv/bin/pip install .
 
 ## Decide a source for Monero's restore height

@@ -50,7 +50,7 @@ detect_os_arch() {
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
-        DEPENDENCY="python-is-python3 python3-pip python3-venv gnupg pkg-config"
+        DEPENDENCY="python3-pip python3-venv gnupg pkg-config"
     elif type -P dnf > /dev/null; then
         # Fedora
         INSTALL="sudo dnf install"

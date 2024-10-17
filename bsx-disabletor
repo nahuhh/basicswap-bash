@@ -42,5 +42,5 @@ read -p 'Select an option [1|2]: ' l
         esac
 done
 
-. $SWAP_DATADIR/venv/bin/activate && python -V
+. $SWAP_DATADIR/venv/bin/activate
 $HOME/.local/bin/bsx/disabletor.sh

@@ -18,7 +18,7 @@ if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
     fi
 fi
 
-. $SWAP_DATADIR/venv/bin/activate && python -V
+. $SWAP_DATADIR/venv/bin/activate
 
 if [ -f /usr/local/bin/bsx/update.sh ]; then
 	/usr/local/bin/bsx/update.sh
