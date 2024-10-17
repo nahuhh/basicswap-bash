@@ -24,7 +24,7 @@ bsx-update
 ```
 basicswap-bash
 ```
-#### Update BSX core
+#### Update BSX core and Coin cores
 ```
 bsx-update
 ```
@@ -43,11 +43,6 @@ bsx-addcoin
 ```
 ```
 bsx-removecoin
-```
-
-#### Update blockchains
-```
-bsx-upgrade-coins
 ```
 
 
