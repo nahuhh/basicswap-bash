@@ -5,20 +5,19 @@ red="echo -e -n \e[31;1m"
 green="echo -e -n \e[32;1m"
 nocolor="echo -e -n \e[0m"
 
-## Download & Install coincurve stuff
-cd $SWAP_DATADIR
-wget -O coincurve-anonswap.zip https://github.com/tecnovert/coincurve/archive/refs/tags/anonswap_v0.2.zip
-unzip -d coincurve-anonswap coincurve-anonswap.zip
-mv -f ./coincurve-anonswap/*/{.,}* ./coincurve-anonswap || true
-cd $SWAP_DATADIR/coincurve-anonswap
-torsocks $SWAP_DATADIR/venv/bin/pip install . # Tails requires torsocks for pip
-
 ## Clone basicswap git
 cd $SWAP_DATADIR
-git clone https://github.com/tecnovert/basicswap -b wow
+git clone https://github.com/basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
-## Install basicswap
-torsocks $SWAP_DATADIR/venv/bin/pip install . # Tails requires torsocks for pip
+
+## Macos
+if [[ $MACOS ]]; then
+    $SWAP_DATADIR/venv/bin/pip install certifi
+fi
+
+## Install basicswap, coincurve, and pip dependencies
+torsocks $SWAP_DATADIR/venv/bin/pip install -r requirements.txt --require-hashes
+torsocks $SWAP_DATADIR/venv/bin/pip install .
 
 ## Decide a source for Monero's restore height
 if [[ "$xmrrestoreheight" ]]; then
@@ -42,27 +41,20 @@ enable_tor() {
 if   [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
-	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
-	# Add coins and use a remote monero node
-	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port \
-	basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
+	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
-
 elif [[ "$particl_mnemonic" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
-	basicswap-prepare --datadir=$SWAP_DATADIR --particl_mnemonic="$PARTICL_MNEMONIC"
-	# Add coins using local nodes
-	basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
-
 elif [[ "$monerod_addr" ]]; then
 	# Setup new install and use a remote monero node
-	XMR_RPC_HOST=$monerod_addr BASE_XMR_RPC_PORT=$monerod_port \
+	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
 	$red"\n\nMake note of your seed above\n"; $nocolor
 	enable_tor
-
 else
 	# Setup new install using local nodes
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
@@ -70,4 +62,5 @@ else
 	enable_tor
 fi
 
-$green"Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n"; $nocolor
+$green"Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n\n";$nocolor
+$red"You may have to logout / login or open a new terminal window for the commands to be detected\n";$nocolor
