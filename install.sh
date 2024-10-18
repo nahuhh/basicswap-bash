@@ -220,6 +220,6 @@ export particl_mnemonic=$particl_mnemonic
 export xmrrestoreheight=$xmrrestoreheight
 export tor_on=$tor_on
 export TAILS=$TAILS
-python -m venv "$SWAP_DATADIR/venv"
+python3 -m venv "$SWAP_DATADIR/venv"
 ## Activate venv
 $HOME/.local/bin/bsx/activate_venv.sh

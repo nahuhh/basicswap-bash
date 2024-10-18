@@ -17,5 +17,5 @@ if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
     fi
 fi
 
-. $SWAP_DATADIR/venv/bin/activate && python -V
+. $SWAP_DATADIR/venv/bin/activate
 $HOME/.local/bin/bsx/startup.sh
