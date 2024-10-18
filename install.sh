@@ -100,6 +100,12 @@ detect_os_arch() {
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="curl python-pipenv gnupg pkgconf base-devel"
 	$green"\n\nDetected Arch Linux";$nocolor
+    elif type -P apk > /dev/null; then
+        # Alpine Linux
+        INSTALL="sudo apk add"
+        UPDATE="sudo apk update"
+        DEPENDENCY="py3-virtualenv python3-dev gnupg gcc musl-dev"
+	$green"\nDetected Alpine Linux";$nocolor
     else
         $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n";$nocolor
 	exit
