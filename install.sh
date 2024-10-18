@@ -63,6 +63,12 @@ detect_os_arch() {
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
 	$green"\nDetected Arch Linux\n";$nocolor
+    elif type -P apk > /dev/null; then
+        # Alpine Linux
+        INSTALL="sudo apk add"
+        UPDATE="sudo apk update"
+        DEPENDENCY="py3-virtualenv python3-dev gnupg gcc musl-dev"
+	$green"\nDetected Alpine Linux\n";$nocolor
     elif [[ $(uname -s) = "Darwin" ]]; then
 	# MacOS
 	export MACOS=1
@@ -211,7 +217,7 @@ fi
 if [[ -d $HOME/.local/bin/bsx ]]; then
     rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
-mv -f -t $HOME/.local/bin/ basicswap-bash bsx*
+cp -r -t $HOME/.local/bin/ basicswap-bash bsx*
 
 ## Make venv and set variables for install
 export monerod_addr=$monerod_addr
