@@ -45,7 +45,19 @@ check_tails() {
 }
 
 detect_os_arch() {
-    if type -P apt > /dev/null; then
+    if [[ $(uname -s) = "Darwin" ]]; then
+	# MacOS
+	export MACOS=1
+	if type -P brew > /dev/null; then
+	    $green"Homebrew is installed\n";$nc
+	    INSTALL="brew install"
+	else
+	    $green"Installing Homebrew\n";$nc
+	    INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
+	fi
+        DEPENDENCY="python gnupg pkg-config"
+	$green"\nDetected MacOS\n";$nocolor
+    elif type -P apt > /dev/null; then
 	check_tails
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
@@ -63,18 +75,6 @@ detect_os_arch() {
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
 	$green"\nDetected Arch Linux\n";$nocolor
-    elif [[ $(uname -s) = "Darwin" ]]; then
-	# MacOS
-	export MACOS=1
-	if type -P brew > /dev/null; then
-	    $green"Homebrew is installed\n";$nc
-	    INSTALL="brew install"
-	else
-	    $green"Installing Homebrew\n";$nc
-	    INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
-	fi
-        DEPENDENCY="python gnupg pkg-config"
-	$green"\nDetected MacOS\n";$nocolor
     else
         $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
 	exit
