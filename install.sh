@@ -211,7 +211,7 @@ fi
 if [[ -d $HOME/.local/bin/bsx ]]; then
     rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
-cp -r -t $HOME/.local/bin/ basicswap-bash bsx*
+cp -r basicswap-bash bsx* $HOME/.local/bin/
 
 ## Make venv and set variables for install
 export monerod_addr=$monerod_addr
