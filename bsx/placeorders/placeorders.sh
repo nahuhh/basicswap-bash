@@ -285,7 +285,7 @@ revert_config() {
 check_bids() {
 	# oneshot. Check for matching offers before posting one
 	apply_config
-	FOUNDBID=$(python createoffers.py --configfile $taker --statefile $state --port=$PORT --oneshot --debug | grep "New bid")
+	FOUNDBID=$(python3 createoffers.py --configfile $taker --statefile $state --port=$PORT --oneshot --debug | grep "New bid")
  	if [[ $FOUNDBID ]]; then
 		$grn"Placed bid successfully! Check BasicSwapDEX to confirm\n";$nc
 	elif [[ $OB_AMOUNT < $OB_MIN && -z $FOUNDBID ]]; then
@@ -300,7 +300,7 @@ check_bids() {
 	else
 		# Post as limit order on the book
 		$cy"No matching offers found. Posting to the orderbook\n";$nc
-		ORDERPLACED=$(python createoffers.py --configfile $maker --statefile $state --port=$PORT --oneshot | grep "New offer")
+		ORDERPLACED=$(python3 createoffers.py --configfile $maker --statefile $state --port=$PORT --oneshot | grep "New offer")
 		if [[ $ORDERPLACED ]]; then
 			revert_config
 			$grn"OFFER POSTED! Please check BasicSwapDEX to confirm\nOffer expires in 4hrs\n";$nc
