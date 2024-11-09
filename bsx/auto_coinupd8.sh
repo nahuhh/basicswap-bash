@@ -1,6 +1,9 @@
 #!/bin/bash
 #set -x
-SWAP_DATADIR=$HOME/coinswaps
+export SWAP_DATADIR=$HOME/coinswaps
+if [[ $USER == amnesia ]]; then
+    export SWAP_DATADIR=$HOME/Persistent/coinswaps
+fi
 BINDIR=$SWAP_DATADIR/bin
 
 echo "Checking for Coin updates" && sleep 1

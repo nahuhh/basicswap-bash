@@ -1,5 +1,8 @@
 #!/bin/bash
 export SWAP_DATADIR=$HOME/coinswaps
+if [[ $USER == amnesia ]]; then
+    export SWAP_DATADIR=$HOME/Persistent/coinswaps
+fi
 
 # Colors
 red="printf \e[31;1m"
