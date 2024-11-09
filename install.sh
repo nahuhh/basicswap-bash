@@ -1,16 +1,41 @@
 #/bin/bash
+#set -x
 export SWAP_DATADIR=$HOME/coinswaps
+if [[ $USER == amnesia ]]; then
+    export SWAP_DATADIR=$HOME/Persistent/coinswaps
+fi
 
 # Colors
 red="printf \e[31;1m"
 green="printf \e[32;1m"
 nocolor="printf \e[0m"
 
+# Check if bsx is already installedo
+chain=(particl monero wownero dash decred firo litecoin bitcoin bitcoincash pivx)
+for coin in "${chain[@]}"; do
+    if [[ -f "${SWAP_DATADIR}/${coin}/${coin}.conf" ]]; then
+        printf "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}.conf\n"
+        abort=1
+    fi
+    if [[ -f "${SWAP_DATADIR}/${coin}/${coin}d.conf" ]]; then
+        printf "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}d.conf\n"
+        abort=1
+    fi
+done
+if [[ -f "${SWAP_DATADIR}/basicswap.json" ]]; then
+    printf "Existing configuration file(s) found at ${SWAP_DATADIR}/basicswap.json.\n"
+    abort=1
+fi
+if [[ $abort ]]; then
+    $red"Aborting install\n"; $nocolor; exit
+fi
+
+
 # Check if basicswap is running
-if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
-    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
+if [[ -f ${SWAP_DATADIR}/particl/particl.pid ]]; then
+    bsx_pid=$(cat ${SWAP_DATADIR}/particl/particl.pid)
     if [[ $bsx_pid ]]; then
-        bsx_run=$(pidof particld | grep $bsx_pid)
+        bsx_run=$(pgrep particld | grep $bsx_pid)
         if [[ $bsx_run ]]; then
             $red"\nError: BasicSwapDEX is already installed.\n"; $nocolor
             exit
@@ -62,7 +87,7 @@ detect_os_arch() {
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
-        DEPENDENCY="python3-pip python3-venv libpython3-dev gnupg pkg-config"
+        DEPENDENCY="python3-pip python3-venv gnupg pkg-config"
     elif type -p dnf > /dev/null; then
         # Fedora
         INSTALL="sudo dnf install"
@@ -92,7 +117,7 @@ $INSTALL $DEPENDENCY automake libtool jq
 # Enable tor
 printf "\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
-read -p 'Select an option: [1|2] ' tor_on
+read -p 'Select an option: [1|2]: ' tor_on
 	case $tor_on in
 		1)
 		$green"BasicSwapDEX will use Tor\n";$nocolor
@@ -109,7 +134,7 @@ done
 ## Particl restore Seed
 printf "\n[1] New Install (default)\n[2] Restore from Particl Seed\n"
 until [[ "$restore" =~ ^[12]$ ]]; do
-read -p 'Select an option: [1|2] ' restore
+read -p 'Select an option: [1|2]: ' restore
 	case $restore in
 		1)
 		$green"Installing BasicSwapDEX\n"; $nocolor
@@ -167,10 +192,17 @@ read -p 'Select an option [1|2]: ' l
 			else
 				$red"The node at $monerod_addr:$monerod_port is not accessible. Try again\n"; $nocolor
 			fi
+
 		done
+		if [[ -z $xmrrestoreheight ]]; then
+			xmrrestoreheight="${checknode}"
+		fi
+			$green"Monero wallet Restore Height set to ${xmrrestoreheight}\n"; $nocolor
 		;;
 		2)
+		xmrrestoreheight=$(curl -s http://node3.monerodevs.org:18089/get_info | jq .height || { echo "Failed to get Monero blockchain height. Please run the installer again."; exit; })
 		$green"BasicSwapDEX will run the Monero node for you.\n"; $nocolor
+		$green"Monero wallet Restore Height set to ${xmrrestoreheight}\n"; $nocolor
 		;;
 		*)
 		$red"You must answer 1 or 2\n"; $nocolor
@@ -214,12 +246,12 @@ fi
 cp -r basicswap-bash bsx* $HOME/.local/bin/
 
 ## Make venv and set variables for install
-export monerod_addr=$monerod_addr
-export monerod_port=$monerod_port
-export particl_mnemonic=$particl_mnemonic
-export xmrrestoreheight=$xmrrestoreheight
-export tor_on=$tor_on
-export TAILS=$TAILS
-python3 -m venv "$SWAP_DATADIR/venv"
+export monerod_addr="${monerod_addr}"
+export monerod_port="${monerod_port}"
+export particl_mnemonic="${particl_mnemonic}"
+export xmrrestoreheight="${xmrrestoreheight}"
+export tor_on="${tor_on}"
+export TAILS="${TAILS}"
+python3 -m venv "${SWAP_DATADIR}/venv"
 ## Activate venv
 $HOME/.local/bin/bsx/activate_venv.sh
