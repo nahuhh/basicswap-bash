@@ -42,22 +42,22 @@ if   [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
 	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
+	torsocks basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
 elif [[ "$particl_mnemonic" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
-	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
+	torsocks basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC"
 	enable_tor
 elif [[ "$monerod_addr" ]]; then
 	# Setup new install and use a remote monero node
 	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	torsocks basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
 	$red"\n\nMake note of your seed above\n\n"; $nocolor
 	enable_tor
 else
 	# Setup new install using local nodes
-	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
+	torsocks basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
 	$red"\n\nMake note of your seed above\n\n"; $nocolor
 	enable_tor
 fi
