@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Colors
-red="echo -e -n \e[31;1m"
-green="echo -e -n \e[32;1m"
-nocolor="echo -e -n \e[0m"
+red="printf \e[31;1m"
+green="printf \e[32;1m"
+nocolor="printf \e[0m"
 
 ## Clone basicswap git
 cd $SWAP_DATADIR
@@ -12,12 +12,12 @@ cd $SWAP_DATADIR/basicswap
 
 ## Macos
 if [[ $MACOS ]]; then
-    $SWAP_DATADIR/venv/bin/pip install certifi
+    $SWAP_DATADIR/venv/bin/pip3 install certifi
 fi
 
 ## Install basicswap, coincurve, and pip dependencies
-torsocks $SWAP_DATADIR/venv/bin/pip install -r requirements.txt --require-hashes
-torsocks $SWAP_DATADIR/venv/bin/pip install .
+torsocks $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
+torsocks $SWAP_DATADIR/venv/bin/pip3 install .
 
 ## Decide a source for Monero's restore height
 if [[ "$xmrrestoreheight" ]]; then
@@ -53,12 +53,12 @@ elif [[ "$monerod_addr" ]]; then
 	# Setup new install and use a remote monero node
 	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
-	$red"\n\nMake note of your seed above\n"; $nocolor
+	$red"\n\nMake note of your seed above\n\n"; $nocolor
 	enable_tor
 else
 	# Setup new install using local nodes
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$CURRENT_XMR_HEIGHT --wowrestoreheight=600000
-	$red"\n\nMake note of your seed above\n"; $nocolor
+	$red"\n\nMake note of your seed above\n\n"; $nocolor
 	enable_tor
 fi
 

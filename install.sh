@@ -2,9 +2,9 @@
 export SWAP_DATADIR=$HOME/coinswaps
 
 # Colors
-red="echo -e -n \e[31;1m"
-green="echo -e -n \e[32;1m"
-nocolor="echo -e -n \e[0m"
+red="printf \e[31;1m"
+green="printf \e[32;1m"
+nocolor="printf \e[0m"
 
 # Check if basicswap is running
 if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
@@ -24,9 +24,9 @@ title="BasicSwapDEX Installer"
 COLUMNS=$(tput cols)
 title_size=${#title}
 span=$(((COLUMNS + title_size) / 2))
-printf "%${COLUMNS}s" " " | tr " " "*"
+printf "%${COLUMNS}s" " " | tr " " "#"
 printf "%${span}s\n" "$title"
-printf "%${COLUMNS}s" " " | tr " " "*"
+printf "%${COLUMNS}s" " " | tr " " "#"
 $nocolor
 
 # Detect Operating system
@@ -36,11 +36,11 @@ DEPENDENCY=""
 TAILS=""
 
 check_tails() {
-	if [ $USER == amnesia ]; then
-	    $green"\nDetected Tails\n";$nocolor
+	if [[ $USER == amnesia ]]; then
+	    $green"\n\nDetected Tails";$nocolor
 	    TAILS=1
 	else
-	    $green"\nDetected Debian\n";$nocolor
+	    $green"\n\nDetected Debian";$nocolor
 	fi
 }
 
@@ -48,7 +48,7 @@ detect_os_arch() {
     if [[ $(uname -s) = "Darwin" ]]; then
 	# MacOS
 	export MACOS=1
-	if type -P brew > /dev/null; then
+	if type -p brew > /dev/null; then
 	    $green"Homebrew is installed\n";$nc
 	    INSTALL="brew install"
 	else
@@ -56,27 +56,27 @@ detect_os_arch() {
 	    INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
 	fi
         DEPENDENCY="python gnupg pkg-config"
-	$green"\nDetected MacOS\n";$nocolor
-    elif type -P apt > /dev/null; then
+	$green"\n\nDetected MacOS";$nocolor
+    elif type -p apt > /dev/null; then
 	check_tails
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
         DEPENDENCY="python3-pip python3-venv gnupg pkg-config"
-    elif type -P dnf > /dev/null; then
+    elif type -p dnf > /dev/null; then
         # Fedora
         INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
         DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
-	$green"\nDetected Fedora\n";$nocolor
-    elif type -P pacman > /dev/null; then
+	$green"\n\nDetected Fedora";$nocolor
+    elif type -p pacman > /dev/null; then
         # Arch Linux
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
-        DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
-	$green"\nDetected Arch Linux\n";$nocolor
+        DEPENDENCY="curl python-pipenv gnupg pkgconf base-devel"
+	$green"\n\nDetected Arch Linux";$nocolor
     else
-        $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
+        $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n";$nocolor
 	exit
     fi
 }
@@ -84,21 +84,21 @@ detect_os_arch() {
 detect_os_arch
 
 ## Update & Install dependencies
-echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding"
+printf "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding\n\n"
 $green"$UPDATE\n$INSTALL $DEPENDENCY curl automake libtool jq\n"; $nocolor
 $UPDATE
-$INSTALL $DEPENDENCY curl automake libtool jq
+$INSTALL $DEPENDENCY automake libtool jq
 
 # Enable tor
-echo -e "\n\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
+printf "\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
 read -p 'Select an option: [1|2] ' tor_on
 	case $tor_on in
 		1)
-		$green"\nBasicSwapDEX will use Tor";$nocolor
+		$green"BasicSwapDEX will use Tor\n";$nocolor
 		;;
 		2)
-		$red"\nBasicSwapDEX will NOT use Tor";$nocolor
+		$red"BasicSwapDEX will NOT use Tor\n";$nocolor
 		;;
 		*)
 		$red"You must answer 1 or 2\n";$nocolor
@@ -107,22 +107,22 @@ read -p 'Select an option: [1|2] ' tor_on
 done
 
 ## Particl restore Seed
-echo -e "\n\n[1] New Install (default)\n[2] Restore from Particl Seed\n"
+printf "\n[1] New Install (default)\n[2] Restore from Particl Seed\n"
 until [[ "$restore" =~ ^[12]$ ]]; do
 read -p 'Select an option: [1|2] ' restore
 	case $restore in
 		1)
-		$green"\nInstalling BasicSwapDEX\n"; $nocolor
+		$green"Installing BasicSwapDEX\n"; $nocolor
 		;;
 		2)
 		until [[ "$wordcount" = "24" ]]; do
 		read -p $'\nEnter your Particl Seed\n[example: word word word word word...] ' particl_mnemonic
 		wordcount=$(echo $particl_mnemonic | wc -w)
 			if  [[ $wordcount = 24 ]]; then
-				echo -e "Restoring BasicSwapDEX"
+				printf "Restoring BasicSwapDEX\n"
 				$green"$particl_mnemonic\n";$nocolor
 			else
-				$red"Try again. Seed must be 24 words"; $nocolor
+				$red"Try again. Seed must be 24 words\n"; $nocolor
 			fi
 		done
 		;;
@@ -137,13 +137,13 @@ if [[ $particl_mnemonic ]]; then
 	read -p $'\nEnter a restore height for your BasicSwap XMR wallet? [Y/n] ' height
 	case $height in
 		n|N)
-		$red"\nNot using a custom XMR Restore height";$nocolor
+		$red"Not using a custom XMR Restore height\n";$nocolor
 		;;
 		*)
 		until [[ "$xmrrestoreheight" =~ ^[0-9]{1,7}$ ]]; do
 		read -p $'Enter your Monero Restore Height [example: 2548568] ' xmrrestoreheight
 			if  [[ $xmrrestoreheight =~ ^[0-9]{7}$ ]]; then
-				$green"\nYour XMR Restore height: $xmrrestoreheight"; $nocolor
+				$green"Your XMR Restore height: $xmrrestoreheight\n"; $nocolor
 			else
 				$red"Try again. Must be 1-7 digits\n"; $nocolor
 			fi
@@ -153,7 +153,7 @@ if [[ $particl_mnemonic ]]; then
 fi
 
 ## Configure Monero
-echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)\n"
+printf "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)\n"
 until [[ "$l" =~ ^[12]$ ]]; do
 read -p 'Select an option [1|2]: ' l
 	case $l in
@@ -161,16 +161,16 @@ read -p 'Select an option [1|2]: ' l
 		until [[ $checknode ]]; do
 			read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
 			read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
-			checknode=$(curl -sk http://$monerod_addr:$monerod_port/get_info)
+			checknode=$(curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
 			if [[ $checknode ]]; then
-				$green"\nSuccessfully connected to the XMR node @ $monerod_addr:$monerod_port"; $nocolor
+				$green"Successfully connected to the XMR node @ $monerod_addr:$monerod_port\n"; $nocolor
 			else
-				$red"\nThe node at $monerod_addr:$monerod_port is not accessible. Try again\n\n"; $nocolor
+				$red"The node at $monerod_addr:$monerod_port is not accessible. Try again\n"; $nocolor
 			fi
 		done
 		;;
 		2)
-		$green"\nBasicSwapDEX will run the Monero node for you."; $nocolor
+		$green"BasicSwapDEX will run the Monero node for you.\n"; $nocolor
 		;;
 		*)
 		$red"You must answer 1 or 2\n"; $nocolor
@@ -179,7 +179,7 @@ read -p 'Select an option [1|2]: ' l
 done
 
 ## Begin Install
-echo -e "\n\nInstalling BasicSwapDEX"
+printf "\nInstalling BasicSwapDEX\n"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 
 # Quest to make trasher happy

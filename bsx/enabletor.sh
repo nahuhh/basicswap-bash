@@ -1,36 +1,58 @@
 #!/bin/bash
 
 # Colors
-red="echo -e -n \e[31;1m"
-green="echo -e -n \e[32;1m"
-nocolor="echo -e -n \e[0m"
+red="printf \e[31;1m"
+green="printf \e[32;1m"
+nocolor="printf \e[0m"
 
 # Detect Operating system
 INSTALL=""
 UPDATE=""
-INIT_TOR="sudo systemctl restart tor"
+INIT_TOR=""
+SYSTEMD_TOR="sudo systemctl restart tor"
+
+check_tails() {
+        if [[ $USER == amnesia ]]; then
+            $green"\n\nDetected Tails";$nocolor
+            TAILS=1
+        else
+            $green"\n\nDetected Debian";$nocolor
+        fi
+}
+
 detect_os_arch() {
-    if type -P apt > /dev/null; then
+    if [[ $(uname -s) = "Darwin" ]]; then
+        # MacOS
+        export MACOS=1
+        if type -p brew > /dev/null; then
+            $green"Homebrew is installed\n";$nc
+            INSTALL="brew install"
+        else
+            $green"Installing Homebrew\n";$nc
+            INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
+        fi
+	INIT_TOR="pkill tor && tor"
+        $green"\n\nDetected MacOS";$nocolor
+    elif type -p apt > /dev/null; then
+        check_tails
         # Debian / Ubuntu / Mint
-        INSTALL="sudo apt install -y"
+        INSTALL="sudo apt install"
         UPDATE="sudo apt update"
-        $green"\nDetected Debian\n";$nocolor
-    elif type -P dnf > /dev/null; then
+	INIT_TOR=$SYSTEMD_TOR
+    elif type -p dnf > /dev/null; then
         # Fedora
-        INSTALL="sudo dnf install -y"
+        INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
-        $green"\nDetected Fedora\n";$nocolor
-    elif type -P pacman > /dev/null; then
+	INIT_TOR=$SYSTEMD_TOR
+        $green"\n\nDetected Fedora";$nocolor
+    elif type -p pacman > /dev/null; then
         # Arch Linux
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
-        $green"\nDetected Arch Linux\n";$nocolor
-    elif type -P brew > /dev/null; then
-        # MacOS
-        INSTALL="brew install"
-        $green"\nDetected MacOS\n";$nocolor
+	INIT_TOR=$SYSTEMD_TOR
+        $green"\n\nDetected Arch Linux";$nocolor
     else
-        $red"Failed to detect OS. Unsupported or unknown distribution.\nInstall Failed.";$nocolor
+        $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n";$nocolor
         exit
     fi
 }
@@ -38,8 +60,8 @@ detect_os_arch() {
 detect_os_arch
 
 # Check for Tor installation
-if type -P tor > /dev/null; then
-	echo -e "\nTor is already installed :)"
+if type -p tor > /dev/null; then
+	printf "\nTor is already installed :)\n"
 else
 	# Install and configure tor
 	echo "Installing Tor..."
@@ -48,7 +70,7 @@ else
 fi
 
 # Create HashedControlPassword
-echo -e "In the next step you'll choose a password. NOTE: It will be saved in PLAIN TEXT."
+printf "In the next step you'll choose a password. NOTE: It will be saved in PLAIN TEXT.\n"
 read -p "Enter a (new) tor control password [example: 123123] " torcontrolpass
 # Edit /etc/tor/torrc
 torhashedpass=$(tor --hash-password $torcontrolpass)
@@ -57,9 +79,9 @@ skipcontrol=$(sudo grep -x "$enabledcontrol" /etc/tor/torrc)
 echo "Check torrc for enabled ControlPort"
 if [[ $skipcontrol ]]; then
 	# Use Existing enabled ControlPort and append HashedControlPassword
-	echo -e "# Added by basicswap-bash\nHashedControlPassword $torhashedpass" | sudo tee -a /etc/tor/torrc
+	printf "# Added by basicswap-bash\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
 else
-	echo -e "# Added by basicswap-bash\n$enabledcontrol\nHashedControlPassword $torhashedpass" | sudo tee -a /etc/tor/torrc
+	printf "# Added by basicswap-bash\n$enabledcontrol\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
 fi
 
 # Restart tor to apply

@@ -2,15 +2,15 @@
 export SWAP_DATADIR=$HOME/coinswaps
 
 # Colors
-red="echo -e -n \e[31;1m"
-green="echo -e -n \e[32;1m"
-nocolor="echo -e -n \e[0m"
+red="printf \e[31;1m"
+green="printf \e[32;1m"
+nocolor="printf \e[0m"
 
 # Check if basicswap is running
 if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
     bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
     if [[ $bsx_pid ]]; then
-        bsx_run=$(pidof particld | grep $bsx_pid)
+        bsx_run=$(pgrep particld | grep $bsx_pid)
         if [[ $bsx_run ]]; then
             $red"\nError: BasicSwapDEX is running.\n"; $nocolor
             exit
@@ -18,7 +18,7 @@ if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
     fi
 fi
 
-echo -e "BasicSwapDEX is currently:\n[1] Password protected\n[2] NOT password protected\n"
+printf "BasicSwapDEX is currently:\n[1] Password protected\n[2] NOT password protected\n\n"
 until [[ "$l" =~ ^[12]$ ]]; do
 read -p 'Select an option [1|2]: ' l
         case $l in

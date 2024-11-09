@@ -16,8 +16,8 @@ fi
 
 #git checkout master
 git pull
-$SWAP_DATADIR/venv/bin/pip install -r requirements.txt --require-hashes
-$SWAP_DATADIR/venv/bin/pip install .
+$SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
+$SWAP_DATADIR/venv/bin/pip3 install .
 
 # Update Coin Cores
 $HOME/.local/bin/bsx/auto_coinupd8.sh
