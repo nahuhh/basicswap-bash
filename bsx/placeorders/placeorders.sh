@@ -26,13 +26,13 @@ MIN_TAKER=""
 ############################
 
 # Colors
-cy="echo -e -n \e[36;1m"
+cy="printf \e[36;1m"
 cy2="\e[36;1m"
-red="echo -e -n \e[31;1m"
+red="printf \e[31;1m"
 red2="\e[31;1m"
-grn="echo -e -n \e[32;1m"
+grn="printf \e[32;1m"
 grn2="\e[32;1m"
-nc="echo -e -n \e[0m"
+nc="printf \e[0m"
 nc2="\e[0m"
 
 # Choose Coins
@@ -48,7 +48,7 @@ coin_prompt_sell() {
 }
 coin() {
 	coin=""
-	echo -e "\n[1] Bitcoin\n[2] Monero\n[3] Litecoin\n[4] Firo\n[5] Dash\n[6] Decred\n[7] PIVX\n[8] Particl\n[9] Wownero\n"
+	printf "\n[1] Bitcoin\n[2] Monero\n[3] Litecoin\n[4] Firo\n[5] Dash\n[6] Decred\n[7] PIVX\n[8] Particl\n[9] Wownero\n\n"
 	until [[ $coin =~ ^[1-9]$ ]]; do
 		read -p 'Select an option: ' coin
 		case $coin in
@@ -88,7 +88,7 @@ coin() {
 			   coinname="Wownero"
 			   coinsymbol="WOW"
 			;;
-			*) $red "\nYou must answer 1-9\n"; $nc
+			*) $red"\nYou must answer 1-9\n"; $nc
 			;;
 		esac
 	done
@@ -126,48 +126,56 @@ book_min() {
 }
 
 set_fiat() {
-	echo -e "[1] USD [default]\n[2] EUR\n[3] CAD\n[4] AUD\n[5] CUSTOM"
+	printf "[1] USD [default]\n[2] EUR\n[3] CAD\n[4] AUD\n[5] CUSTOM\n\n"
 	read -p 'Select an option: ' fiat_select
 	case $fiat_select in
 		1) FIAT=USD
 		   fiat=usd
+		   echo "USD"
 		;;
 		2) FIAT=EUR
 		   fiat=eur
+		   echo "EUR"
 		;;
 		3) FIAT=CAD
 		   fiat=cad
+		   echo "CAD"
 		;;
 		4) FIAT=AUD
 		   fiat=aud
+		   echo "AUD"
 		;;
 		5) read -p 'Please enter the lowecase 3 character currency code [example: jpy] ' FIAT
 		   fiat=$FIAT
 		;;
 		*) FIAT=USD
 		   fiat=usd
+		   echo "USD"
+
 		;;
 	esac
 }
 
 coin_price() {
-	echo -e "\nCurrent Market Rates are.."
-	YOUR_FIAT=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=$THEIR_COIN,$YOUR_COIN&vs_currencies=$fiat" | jq -r ".$YOUR_COIN.$fiat")
-	THEIR_FIAT=$(curl -s "https://api.coingecko.com/api/v3/simple/price?ids=$THEIR_COIN,$YOUR_COIN&vs_currencies=$fiat" | jq -r ".$THEIR_COIN.$fiat")
+	printf "\n\nCurrent Market Rates are..\n"
+	curl -s "https://api.coingecko.com/api/v3/simple/price?ids=$THEIR_COIN,$YOUR_COIN&vs_currencies=$fiat" > rates.txt
+	YOUR_FIAT=$(cat rates.txt | jq -r ".$YOUR_COIN.$fiat")
+	THEIR_FIAT=$(cat rates.txt | jq -r ".$THEIR_COIN.$fiat")
 	TAKER_RATE=$(echo $THEIR_FIAT $YOUR_FIAT | awk '{ printf "%.8f\n", $1 / $2 }' )
 	MAKER_RATE=$(echo $TAKER_RATE | awk '{ printf "%.8f\n", 1 / $1 }')
 	$cy"$THEIR_FIAT $FIAT$nc2/$grn2$theircoin$nc2 which is $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n"
 	$cy"$YOUR_FIAT $FIAT$nc2/$red2$yourcoin$nc2 which is $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n"
+	rm rates.txt
 }
 
 buy_sell() {
-	echo -e "\n[1] BUY a specific amount of $grn2$theircapital$nc2\n[2] SELL a specific amount of your $red2$yourcapital$nc2\n"
+	printf "\n\n[1] BUY a specific amount of $grn2$theircapital$nc2\n[2] SELL a specific amount of your $red2$yourcapital$nc2\n\n"
 	until [[ $BUYORSELL =~ ^[12]$ ]]; do
 		read -p 'Select an option: ' BUYORSELL
 		case $BUYORSELL in
-			1) read -p "How much $theircapital do you want to BUY? [example: 1] " AMOUNT
-			   $cy "\nRate you will pay:\n";$nc
-			   echo -e "[1] CUSTOM: Specific Crypto Rate $red2$yourcoin$nc2/$grn2$theircoin$nc2\n[2] CUSTOM: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n[4] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+ $PERCENT%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to pay"
+			1) read -p $'\nHow much '"$theircapital"' do you want to BUY? [example: 1] ' AMOUNT
+			   $cy"\nRate you will pay:\n";$nc
+			   printf "\n[1] CUSTOM: Specific Crypto Rate $red2$yourcoin$nc2/$grn2$theircoin$nc2\n[2] CUSTOM: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin$nc2\n[4] PRESET: $red2$TAKER_RATE $yourcoin$nc2/$grn2$theircoin $cy2+ $PERCENT%%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to pay\n\n"
 			   read -p 'Select an option: ' RATESEL
 			   case $RATESEL in
 				1) read -p $"At what rate would you like to Pay? [example: $TAKER_RATE] " RATE
@@ -191,12 +199,12 @@ buy_sell() {
 				;;
 			   esac
 			   MAKER_RATE=$(echo $RATE | awk '{ printf "%.8f\n", 1 / $1 }')
-			   echo -e "\nPaying: $red2 $PRICE$FIAT$nc2 which is $red2($RATE $yourcoin$nc2/$grn2$theircoin$nc2)"
-			   echo -e "Rate to be paid: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n"
+			   printf "\nPaying: $red2 $PRICE$FIAT$nc2 which is $red2($RATE $yourcoin$nc2/$grn2$theircoin$nc2)\n"
+			   printf "Rate to be paid: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n\n"
 			;;
-			2) read -p "How much YOUR $yourcapital do you want to SELL [example: 1] " AMOUNT
-			   $cy "\nRate to charge:\n";$nc
-			   echo -e "[1] CUSTOM: Specific Crypto Rate $grn2$theircoin$nc2/$red2$yourcoin$nc2\n[2] CUSTOM: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n[4] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+ $PERCENT%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to charge"
+			2) read -p $'\nHow much YOUR '"$yourcapital"' do you want to SELL [example: 1] ' AMOUNT
+			   $cy"\nRate to charge:\n";$nc
+			   printf "\n[1] CUSTOM: Specific Crypto Rate $grn2$theircoin$nc2/$red2$yourcoin$nc2\n[2] CUSTOM: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+/- CUSTOM Percent$nc2\n[3] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin$nc2\n[4] PRESET: $grn2$MAKER_RATE $theircoin$nc2/$red2$yourcoin $cy2+ $PERCENT%%$nc2\n[ENTER] FIAT: Enter a $cy2$FIAT$nc2 rate to charge\n\n"
 			   read -p 'Select an option: ' RATESEL
 			   case $RATESEL in
 				1) read -p $"Enter specific rate to Charge? [example: $MAKER_RATE] " RATE
@@ -220,9 +228,9 @@ buy_sell() {
 				;;
 				esac
 			   TAKER_RATE=$(echo $RATE | awk '{ printf "%.8f\n", 1 / $1 }')
-			   echo -e "Selling at $PRICE$FIAT which is a rate of $grn2$RATE $theircoin$nc2/$red2$yourcoin$nc2"
+			   printf "Selling at $PRICE$FIAT which is a rate of $grn2$RATE $theircoin$nc2/$red2$yourcoin$nc2\n"
 			;;
-			*) $red "\nYou must answer 1 or 2\n"; $nc
+			*) $red"\nYou must answer 1 or 2\n"; $nc
 			;;
 		esac
 	done
@@ -232,7 +240,7 @@ buy_sell() {
 split_orders() {
 	if [ $ALLOW_SPLIT_ORDERS = true ]; then
 		MIN_SWAP=$(echo $AMOUNT $MAXBIDS | awk '{ printf "%.0f\n", $1 / $2 }')
-		echo -e "$cy2#TODO$nc2 Splitting into multiple bids if necessary. $red2$MAXBIDS$nc2 tx at most"
+		printf "$cy2#TODO$nc2 Splitting into multiple bids if necessary. $red2$MAXBIDS$nc2 tx at most\n"
 	else
 		MIN_SWAP=$AMOUNT
 		$red"One order only. Not Recommended";$nc
@@ -249,14 +257,14 @@ apply_config() {
 	sed -i -z "s/COIN_TO_BUY/$theircapital/" $taker $maker
 	sed -i -z "s/PERCENT/$PERCENT/" $maker
 	sed -i -z "s/MAXBIDS/$MAXBIDS/" $taker
-	echo -e "\nMinumum amt per swap	= $grn2$MIN_TAKER $theircoin$nc2"
-	echo -e "			= $red2$MIN_SWAP $yourcoin$nc2\n"
+	printf "\nMinumum amt per swap	= $grn2$MIN_TAKER $theircoin$nc2\n"
+	printf "			= $red2$MIN_SWAP $yourcoin$nc2\n\n"
 	if [[ $BUYORSELL = 1 ]]; then
 		MAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 / $2 }')
 		OB_AMOUNT=$MAKERAMOUNT
 		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 10 }')
-		echo -e "Outgoing: $red2$MAKERAMOUNT $yourcoin$nc2"
-		echo -e "Incoming: $grn2~$AMOUNT $theircoin$nc2"
+		printf "Outgoing: $red2$MAKERAMOUNT $yourcoin$nc2\n"
+		printf "Incoming: $grn2~$AMOUNT $theircoin$nc2\n"
 		sed -i -z "s/AMOUNT/$MAKERAMOUNT/g" $maker
 		sed -i -z "s/RATE/$MAKER_RATE/" $maker
 		sed -i -z "s/RATE/$RATE/" $taker
@@ -266,8 +274,8 @@ apply_config() {
 		TAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 * $2 }')
 		OB_AMOUNT=$AMOUNT
 		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 10 }')
-		echo -e "Outgoing: $red2$AMOUNT $yourcoin$nc2"
-		echo -e "Incoming: $grn2~$TAKERAMOUNT $theircoin$nc2"
+		printf "Outgoing: $red2$AMOUNT $yourcoin$nc2\n"
+		printf "Incoming: $grn2~$TAKERAMOUNT $theircoin$nc2\n"
 		sed -i -z "s/AMOUNT/$TAKERAMOUNT/g" $taker
 		sed -i -z "s/RATE/$TAKER_RATE/" $taker
 		sed -i -z "s/RATE/$RATE/" $maker
@@ -284,17 +292,15 @@ revert_config() {
 
 check_bids() {
 	# oneshot. Check for matching offers before posting one
+	revert_config
 	apply_config
 	FOUNDBID=$(python3 createoffers.py --configfile $taker --statefile $state --port=$PORT --oneshot --debug | grep "New bid")
  	if [[ $FOUNDBID ]]; then
 		$grn"Placed bid successfully! Check BasicSwapDEX to confirm\n";$nc
 	elif [[ $OB_AMOUNT < $OB_MIN && -z $FOUNDBID ]]; then
-		echo -e "Checking for a matching offer"
-		echo -e "No matching offers found $red2:@ !!!$nc2\nBid quantity too$red2 low$nc2 to post to order book.\nTrying again in 30 seconds"
-		sleep 2
-		revert_config
-		sleep 28
-		apply_config
+		printf "Checking for a matching offer\n"
+		printf "No matching offers found $red2:@ !!!$nc2\nBid quantity too$red2 low$nc2 to post to order book.\nTrying again in 30 seconds\n"
+		sleep 30
 		$cy"Rechecking bids\n";$nc
 		recheck_bids
 	else
@@ -302,10 +308,8 @@ check_bids() {
 		$cy"No matching offers found. Posting to the orderbook\n";$nc
 		ORDERPLACED=$(python3 createoffers.py --configfile $maker --statefile $state --port=$PORT --oneshot | grep "New offer")
 		if [[ $ORDERPLACED ]]; then
-			revert_config
 			$grn"OFFER POSTED! Please check BasicSwapDEX to confirm\nOffer expires in 4hrs\n";$nc
 		else
-			revert_config
 			$red"Placing Order failed. Try again$nc2\n"
 		fi
 	fi
@@ -328,8 +332,8 @@ recheck_bids() {
 	coin
 	coin_prompt_sell
 
-	echo -e "Buying: $grn2$theircapital$nc2"
-	echo -e "Selling: $red2$yourcapital$nc2"
+	printf "\nBuying: $grn2$theircapital$nc2"
+	printf "\nSelling: $red2$yourcapital$nc2\n"
 
 #2. Set rates
 # Pull Market rate
