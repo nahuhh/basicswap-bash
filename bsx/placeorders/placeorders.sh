@@ -262,7 +262,7 @@ apply_config() {
 	if [[ $BUYORSELL = 1 ]]; then
 		MAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 / $2 }')
 		OB_AMOUNT=$MAKERAMOUNT
-		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 10 }')
+		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 100 }') # TODO make offers repeat
 		printf "Outgoing: $red2$MAKERAMOUNT $yourcoin$nc2\n"
 		printf "Incoming: $grn2~$AMOUNT $theircoin$nc2\n"
 		sed -i -z "s/AMOUNT/$MAKERAMOUNT/g" $maker
@@ -273,7 +273,7 @@ apply_config() {
 	else
 		TAKERAMOUNT=$(echo $AMOUNT $MAKER_RATE | awk '{ printf "%.8f\n", $1 * $2 }')
 		OB_AMOUNT=$AMOUNT
-		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 10 }')
+		INCREMENT=$(echo $OB_AMOUNT | awk '{ printf "%.4f", $1 / 100 }') # TODO make offers repeat
 		printf "Outgoing: $red2$AMOUNT $yourcoin$nc2\n"
 		printf "Incoming: $grn2~$TAKERAMOUNT $theircoin$nc2\n"
 		sed -i -z "s/AMOUNT/$TAKERAMOUNT/g" $taker
@@ -295,9 +295,10 @@ check_bids() {
 	revert_config
 	apply_config
 	FOUNDBID=$(python3 createoffers.py --configfile $taker --statefile $state --port=$PORT --oneshot --debug | grep "New bid")
+	POSTOFFER=$(python3 -c "print($OB_AMOUNT < $OB_MIN)")
  	if [[ $FOUNDBID ]]; then
 		$grn"Placed bid successfully! Check BasicSwapDEX to confirm\n";$nc
-	elif [[ $OB_AMOUNT < $OB_MIN && -z $FOUNDBID ]]; then
+	elif [[ $POSTOFFER == True ]] && [[ -z $FOUNDBID ]]; then
 		printf "Checking for a matching offer\n"
 		printf "No matching offers found $red2:@ !!!$nc2\nBid quantity too$red2 low$nc2 to post to order book.\nTrying again in 30 seconds\n"
 		sleep 30
