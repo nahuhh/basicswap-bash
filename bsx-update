@@ -32,7 +32,7 @@ else
 
 	# Download updated scripts
 	echo "Updating basicswap-bash scripts" && sleep 1
-	git clone https://github.com/nahuhh/basicswap-bash
+	git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update."; exit; }
 	cd basicswap-bash
 
 	# Move scripts
