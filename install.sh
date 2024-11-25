@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #set -x
 export SWAP_DATADIR=$HOME/coinswaps
 if [[ $USER == amnesia ]]; then
