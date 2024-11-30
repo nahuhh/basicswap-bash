@@ -70,8 +70,7 @@ else
 fi
 
 # Create HashedControlPassword
-printf "In the next step you'll choose a password. NOTE: It will be saved in PLAIN TEXT.\n"
-read -p "Enter a (new) tor control password [example: 123123] " torcontrolpass
+torcontrolpass=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 24 | head -n 1)
 # Edit /etc/tor/torrc
 torhashedpass=$(tor --hash-password $torcontrolpass)
 enabledcontrol=$(echo "ControlPort 9051")
