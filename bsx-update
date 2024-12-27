@@ -32,8 +32,13 @@ else
 
 	# Download updated scripts
 	echo "Updating basicswap-bash scripts" && sleep 1
-	git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update."; exit; }
-	cd basicswap-bash
+	if [[ -d basicswap-bash ]]; then
+		cd basicswap-bash
+		git pull || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
+	else
+		git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
+		cd basicswap-bash
+	fi
 
 	# Move scripts
 	rm -rf $HOME/.local/bin/bsx
