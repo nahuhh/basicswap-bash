@@ -34,18 +34,21 @@ for coin in "${chain[@]}"; do
 
   if [[ -d $BINDIR/$coin ]]; then
     UPDATE=$($BINDIR/$coin/"$coind"d --version | head -n 1 | grep -Fxf $SWAP_DATADIR/basicswap/core_versions)
-  fi
-
-  if [[ -z $UPDATE ]]; then
-    select+="$coin,"
-    list="${select%,}"
+    if [[ -z $UPDATE ]]; then
+      select+="$coin,"
+      list="${select%,}"
+    fi
   fi
 done
 
-if [[ -n $select ]]; then
+if [[ -n $list ]]; then
+  withoutCoins=""
+  if [[ ! $list =~ "particl" ]]; then
+    withoutCoins="--withoutcoins=particl"
+  fi
   echo "Updating $list"
   . $SWAP_DATADIR/venv/bin/activate
-  basicswap-prepare --datadir=$SWAP_DATADIR --preparebinonly --withcoins=$list
+  basicswap-prepare --datadir=$SWAP_DATADIR --preparebinonly --withcoins=$list "${withoutCoins}"
 else
   echo "Coin Cores are up to date"
 fi
