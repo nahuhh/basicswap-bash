@@ -41,12 +41,12 @@ else
 	fi
 
 	# Move scripts
-	rm -rf $HOME/.local/bin/bsx
-	mv -f basic* bsx* $HOME/.local/bin/
+	rm -rf $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
+	cp -r basic* bsx* $HOME/.local/bin/
 
 	# Copy core_versions to basicswap folder
 	mv core_versions $SWAP_DATADIR/basicswap/core_versions
 
 	# Update BasicSwap, coincurve and coin cores
-	$HOME/.local/bin/bsx/update.sh
+	./bsx/update.sh
 fi
