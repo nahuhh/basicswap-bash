@@ -45,5 +45,6 @@ read -p 'Select an option [1|2]: ' l
         esac
 done
 
+export disablecoin="$1"
 . $SWAP_DATADIR/venv/bin/activate
 $HOME/.local/bin/bsx/removecoin.sh
