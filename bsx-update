@@ -34,7 +34,7 @@ else
 	echo "Updating basicswap-bash scripts" && sleep 1
 	if [[ -d basicswap-bash ]]; then
 		cd basicswap-bash
-		git pull || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
+		git pull || { $red"Failed to update repo. Cancelling update.\n"; exit; }
 	else
 		git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
 		cd basicswap-bash
@@ -43,9 +43,6 @@ else
 	# Move scripts
 	rm -rf $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
 	cp -r basic* bsx* $HOME/.local/bin/
-
-	# Copy core_versions to basicswap folder
-	mv core_versions $SWAP_DATADIR/basicswap/core_versions
 
 	# Update BasicSwap, coincurve and coin cores
 	./bsx/update.sh
