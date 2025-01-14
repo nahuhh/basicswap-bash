@@ -85,14 +85,9 @@ fi
 
 # Restart tor to apply
 $INIT_TOR
-echo "Waiting for Tor... 5sec" && sleep 5
 
-# lol are we there yet?
-TOR_PROXY_HOST=127.0.0.1
-basicswap-prepare --datadir=$SWAP_DATADIR --enabletor
+BSX_LOCAL_TOR=true basicswap-prepare --datadir=$SWAP_DATADIR --enabletor
 
 # Workaround: Replace torpassword in various config files
 oldtorpass=$(cat $SWAP_DATADIR/basicswap.json | jq -r .tor_control_password)
 sed -i "s/$oldtorpass/$torcontrolpass/" $SWAP_DATADIR/*/*.conf $SWAP_DATADIR/basicswap.json
-# Fix: localhost binding for btc/ltc/part (etc) configs
-sed -i -z "s/\nbind=0.0.0.0/\nbind=127.0.0.1/" $SWAP_DATADIR/*/*.conf
