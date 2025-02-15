@@ -2,6 +2,14 @@
 A suite of bash scripts to install and manage
 BasicSwapDEX on Windows(WSL)/Debian/Ubuntu/Arch/Fedora
 
+### Dependencies
+You will need::
+- curl
+- git
+`sudo apt install curl git`
+
+Other dependencies vary by distribution and are handled by the installer.
+
 ### New Installation
 ```bash
 git clone https://github.com/nahuhh/basicswap-bash
@@ -15,7 +23,7 @@ git clone https://github.com/nahuhh/basicswap-bash
 cd basicswap-bash
 mkdir -p $HOME/.local/bin
 rm -r $HOME/.local/bin/bsx
-mv -f basic* bsx* $HOME/.local/bin/
+cp -r basic* bsx* $HOME/.local/bin/
 cd .. && rm -rf basicswap-bash
 bsx-update
 ```
@@ -37,7 +45,7 @@ bsx-enabletor
 bsx-disabletor
 ```
 
-#### Add/remove coins
+#### Add/disable coins
 ```
 bsx-addcoin
 ```
