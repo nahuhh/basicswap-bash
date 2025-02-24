@@ -1,5 +1,4 @@
 #!/bin/bash
-
 ## Prompt for user input
 if [[ -z $addcoin ]]; then
 	printf "\n\nThe following coins can be added (case sensitive)\nbitcoin\nbitcoincash\ndash\ndecred\ndogecoin\nfiro\nlitecoin\npivx\nwownero\n\n"
@@ -26,4 +25,4 @@ if [ $addcoin = bitcoin ]; then
 		echo "Not using btcfastsync"
 	fi
 fi
-basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin "${fastsync:+${fastsync}}"
+basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin ${fastsync:+${fastsync}}
