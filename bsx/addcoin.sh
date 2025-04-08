@@ -11,18 +11,13 @@ read -p $'\nAdd '$addcoin' to your BasicSwap install, correct? Press ENTER to co
 ## Add the coin
 fastsync=""
 if [ $addcoin = bitcoin ]; then
+
 	read -p 'Use --usebtcfastsync for bitcoin? [Y/n] ' btcfastsync
-
-	case $btcfastsync in
-		n | N) confirmed=no;;
-		*) confirmed=yes;;
-	esac
-
-	if [ $confirmed = yes ]; then
+	if [[ "${btcfastsync}" =~ ^[nN]$ ]]; then
+		echo "Not using btcfastsync"
+	else
 		echo "Using btcfastsync"
 		fastsync="--usebtcfastsync"
-	else
-		echo "Not using btcfastsync"
 	fi
 fi
-basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin ${fastsync:+${fastsync}}
+basicswap-prepare --datadir=$SWAP_DATADIR --addcoin=$addcoin ${fastsync:+$fastsync}
