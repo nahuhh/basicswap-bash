@@ -1,7 +1,9 @@
 #!/bin/bash
+source $HOME/.local/bin/bsx/shared.sh
+
 ## Prompt for user input
 if [[ -z $addcoin ]]; then
-	printf "\n\nThe following coins can be added (case sensitive)\nbitcoin\nbitcoincash\ndash\ndecred\ndogecoin\nfiro\nlitecoin\npivx\nwownero\n\n"
+	printf "\n\nThe following coins can be added (case sensitive)\n${coins}\n\n"
 	read -p 'Full name of coin to add [example: litecoin] ' addcoin
 fi
 

@@ -1,49 +1,8 @@
 #!/bin/bash
-export SWAP_DATADIR=$HOME/coinswaps
-if [[ $USER == amnesia ]]; then
-    export SWAP_DATADIR=$HOME/Persistent/coinswaps
-fi
+source $HOME/.local/bin/bsx/shared.sh
 
-# Colors
-red="printf \e[31;1m"
-green="printf \e[32;1m"
-nocolor="printf \e[0m"
+is_running
+is_tails
 
-# Check if basicswap is running
-if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
-    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
-    if [[ $bsx_pid ]]; then
-        bsx_run=$(pgrep particld | grep $bsx_pid)
-        if [[ $bsx_run ]]; then
-            $red"\nError: BasicSwapDEX is running.\n"; $nocolor
-            exit
-        fi
-    fi
-fi
-
-printf "BasicSwapDEX is currently:\n[1] Password protected\n[2] NOT password protected\n\n"
-until [[ "$l" =~ ^[12]$ ]]; do
-read -p 'Select an option [1|2]: ' l
-        case $l in
-                1)
-                until [[ $pass1 ]] && [[ $pass1 == $pass2 ]]; do
-                        read -sp 'Enter your BasicSwap password: ' pass1
-                        read -sp $'\nRe-enter your BasicSwap password: ' pass2
-                        if [[ $pass1 == $pass2 ]]; then
-                                export WALLET_ENCRYPTION_PWD=$pass1
-                        else
-                                $red"\nThe passwords entered don't match. Try again\n\n"; $nocolor
-                        fi
-                done
-                ;;
-                2)
-                $nocolor"\nProceeding without a password\n"
-                ;;
-                *)
-                $red"You must answer 1 or 2\n"; $nocolor
-                ;;
-        esac
-done
-
-. $SWAP_DATADIR/venv/bin/activate
+activate_venv
 $HOME/.local/bin/bsx/enabletor.sh

@@ -1,25 +1,8 @@
 #!/bin/bash
-export SWAP_DATADIR=$HOME/coinswaps
-if [[ $USER == amnesia ]]; then
-    export SWAP_DATADIR=$HOME/Persistent/coinswaps
-    TAILS=1
-fi
+source $HOME/.local/bin/bsx/shared.sh
 
-# Colors
-red="echo -e -n \e[31;1m"
-green="echo -e -n \e[32;1m"
-nocolor="echo -e -n \e[0m"
+is_running
+is_tails
 
-if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
-    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
-    if [[ $bsx_pid ]]; then
-        bsx_run=$(pidof particld | grep $bsx_pid)
-        if [[ $bsx_run ]]; then
-            $red"\nError: BasicSwapDEX is already running.\n"; $nocolor
-            exit
-        fi
-    fi
-fi
-
-. $SWAP_DATADIR/venv/bin/activate
+activate_venv
 $HOME/.local/bin/bsx/startup.sh
