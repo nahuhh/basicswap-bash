@@ -3,8 +3,8 @@ source $HOME/.local/bin/bsx/shared.sh
 
 ## Prompt for user input
 if [[ -z "$disablecoin" ]]; then
-	printf "\n\nThe following coins can be disabled (case sensitive)\n${coins}\n\n"
-	read -p 'Full name of coin to disable [example: wownero] ' disablecoin
+    printf "\n\nThe following coins can be disabled (case sensitive)\n${coins}\n\n"
+    read -p 'Full name of coin to disable [example: wownero] ' disablecoin
 fi
 
 ## Confirm

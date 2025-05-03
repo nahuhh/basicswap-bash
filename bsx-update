@@ -6,9 +6,9 @@ is_tails
 
 # Cleanup old version
 if [ -f /usr/local/bin/bsx/update.sh ]; then
-	/usr/local/bin/bsx/update.sh
-	cd /usr/local/bin
-	sudo rm -rf basicswap-bash bsx*
+    /usr/local/bin/bsx/update.sh
+    cd /usr/local/bin
+    sudo rm -rf basicswap-bash bsx*
 fi
 
 # Download updated scripts
@@ -16,11 +16,17 @@ echo "Updating basicswap-bash scripts" && sleep 1
 
 cd $SWAP_DATADIR/basicswap
 if [[ -d basicswap-bash ]]; then
-	cd basicswap-bash
-	git pull || { $red"Failed to update repo. Cancelling update.\n"; exit; }
+    cd basicswap-bash
+    git pull || {
+        $red"Failed to update repo. Cancelling update.\n"
+        exit
+    }
 else
-	git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
-	cd basicswap-bash
+    git clone https://github.com/nahuhh/basicswap-bash || {
+        $red"Failed to clone repo. Cancelling update.\n"
+        exit
+    }
+    cd basicswap-bash
 fi
 
 # Move scripts

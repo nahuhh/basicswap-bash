@@ -11,12 +11,12 @@ detect_os_arch
 
 # Check for Tor installation
 if type -p tor > /dev/null; then
-	printf "\nTor is already installed :)\n"
+    printf "\nTor is already installed :)\n"
 else
-	# Install and configure tor
-	echo "Installing Tor..."
-	$UPDATE
-	$INSTALL tor
+    # Install and configure tor
+    echo "Installing Tor..."
+    $UPDATE
+    $INSTALL tor
 fi
 
 # Create HashedControlPassword
@@ -27,10 +27,10 @@ enabledcontrol=$(echo "ControlPort 9051")
 skipcontrol=$(sudo grep -x "$enabledcontrol" /etc/tor/torrc)
 echo "Check torrc for enabled ControlPort"
 if [[ $skipcontrol ]]; then
-	# Use Existing enabled ControlPort and append HashedControlPassword
-	printf "# Added by basicswap-bash\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
+    # Use Existing enabled ControlPort and append HashedControlPassword
+    printf "# Added by basicswap-bash\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
 else
-	printf "# Added by basicswap-bash\n$enabledcontrol\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
+    printf "# Added by basicswap-bash\n$enabledcontrol\nHashedControlPassword $torhashedpass\n" | sudo tee -a /etc/tor/torrc
 fi
 
 # Restart tor to apply
