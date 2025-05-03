@@ -1,13 +1,7 @@
 #!/bin/bash
-export SWAP_DATADIR=$HOME/coinswaps
-if [[ $USER == amnesia ]]; then
-    export SWAP_DATADIR=$HOME/Persistent/coinswaps
-fi
+source $HOME/.local/bin/bsx/shared.sh
 
-# Colors
-red="printf \e[31;1m"
-green="printf \e[32;1m"
-nocolor="printf \e[0m"
+is_tails
 
 # Check if basicswap is running
 if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then

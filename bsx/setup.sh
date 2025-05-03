@@ -1,9 +1,5 @@
 #!/bin/bash
-
-# Colors
-red="printf \e[31;1m"
-green="printf \e[32;1m"
-nocolor="printf \e[0m"
+source $HOME/.local/bin/bsx/shared.sh
 
 ## Clone basicswap git
 cd $SWAP_DATADIR
@@ -15,14 +11,19 @@ else
     cd $SWAP_DATADIR/basicswap
 fi
 
-## Macos
-if [[ $MACOS ]]; then
+## Install basicswap, coincurve, and pip dependencies
+# Macos
+if [[ "${MACOS}" ]]; then
     $SWAP_DATADIR/venv/bin/pip3 install certifi
 fi
 
-## Install basicswap, coincurve, and pip dependencies
-$SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
-$SWAP_DATADIR/venv/bin/pip3 install .
+if [[ "${TAILS}" ]]; then
+    torsocks $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
+    torsocks $SWAP_DATADIR/venv/bin/pip3 install .
+else
+    $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
+    $SWAP_DATADIR/venv/bin/pip3 install .
+fi
 
 # Use Tor if we want
 enable_tor() {
@@ -38,25 +39,29 @@ if   [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
 	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || { $red"Installation failed. Try again"; exit; }
 	$red"\n\nMonero wallet restore height is ${xmrrestoreheight}"; $nocolor
+	read -p "Press ENTER to continue. "
 	enable_tor
 elif [[ "$particl_mnemonic" ]]; then
 	# Restore seed
 	PARTICL_MNEMONIC=$particl_mnemonic
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || { $red"Installation failed. Try again"; exit; }
 	$red"\n\nMonero wallet restore height is ${xmrrestoreheight}"; $nocolor
+	read -p "Press ENTER to continue. "
 	enable_tor
 elif [[ "$monerod_addr" ]]; then
 	# Setup new install and use a remote monero node
 	XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || { $red"Installation failed. Try again"; exit; }
 	$red"\n\nMonero wallet restore height is ${xmrrestoreheight}"; $nocolor
-	$red"\n\nMake note of your seed above\n\n"; $nocolor
+	$red"\n\nIMPORTANT!! Make note of your seed above!!\n\n"; $nocolor
+	read -p "Press ENTER to continue. "
 	enable_tor
 else
 	# Setup new install using local nodes
 	basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || { $red"Installation failed. Try again"; exit; }
 	$red"\n\nMonero wallet restore height is ${xmrrestoreheight}"; $nocolor
-	$red"\n\nMake note of your seed above\n\n"; $nocolor
+	$red"\n\nIMPORTANT!! Make note of your seed above!!\n\n"; $nocolor
+	read -p "Press ENTER to continue. "
 	enable_tor
 fi
 

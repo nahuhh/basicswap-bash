@@ -1,49 +1,30 @@
 #!/bin/bash
-export SWAP_DATADIR=$HOME/coinswaps
-if [[ $USER == amnesia ]]; then
-    export SWAP_DATADIR=$HOME/Persistent/coinswaps
-fi
+source $HOME/.local/bin/bsx/shared.sh
 
-# Colors
-red="printf \e[31;1m"
-green="printf \e[32;1m"
-nocolor="printf \e[0m"
+is_running
+is_tails
 
-# Check if basicswap is running
-if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
-    bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
-    if [[ $bsx_pid ]]; then
-        bsx_run=$(pgrep particld | grep $bsx_pid)
-        if [[ $bsx_run ]]; then
-            $red"\nError: BasicSwapDEX is running.\n"; $nocolor
-            exit
-        fi
-    fi
-fi
-
-. $SWAP_DATADIR/venv/bin/activate
-
+# Cleanup old version
 if [ -f /usr/local/bin/bsx/update.sh ]; then
 	/usr/local/bin/bsx/update.sh
 	cd /usr/local/bin
 	sudo rm -rf basicswap-bash bsx*
-else
-	cd $SWAP_DATADIR/basicswap
-
-	# Download updated scripts
-	echo "Updating basicswap-bash scripts" && sleep 1
-	if [[ -d basicswap-bash ]]; then
-		cd basicswap-bash
-		git pull || { $red"Failed to update repo. Cancelling update.\n"; exit; }
-	else
-		git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
-		cd basicswap-bash
-	fi
-
-	# Move scripts
-	rm -rf $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
-	cp -r basic* bsx* $HOME/.local/bin/
-
-	# Update BasicSwap, coincurve and coin cores
-	./bsx/update.sh
 fi
+
+# Download updated scripts
+echo "Updating basicswap-bash scripts" && sleep 1
+
+cd $SWAP_DATADIR/basicswap
+if [[ -d basicswap-bash ]]; then
+	cd basicswap-bash
+	git pull || { $red"Failed to update repo. Cancelling update.\n"; exit; }
+else
+	git clone https://github.com/nahuhh/basicswap-bash || { $red"Failed to clone repo. Cancelling update.\n"; exit; }
+	cd basicswap-bash
+fi
+
+# Move scripts
+rm -rf $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
+cp -r basic* bsx* $HOME/.local/bin/;
+# Update BasicSwap, coincurve and coin cores
+$HOME/.local/bin/bsx/update.sh
