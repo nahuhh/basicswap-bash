@@ -1,0 +1,23 @@
+#!/bin/bash
+source $HOME/.local/bin/bsx/shared.sh
+
+is_tails
+is_running
+
+part_conf="$SWAP_DATADIR/particl/particl.conf"
+printf "[1] Enable Particl staking\n[2] Disable Particl staking\n\n"
+read -p "Select an option [1|2]: " staking
+if [[ $staking = 1 ]]; then # Enable
+    echo "123 $part_conf"
+    [ -f $part_conf ] && {
+        sed -i "s/staking=0/staking=1/" $part_conf \
+            && $green"Particl staking enabled\n"
+    } || $red"Failed\n"
+elif [[ $staking = 2 ]]; then # Disable
+    [ -f $part_conf ] && {
+        sed -i "s/staking=1/staking=0/" $part_conf \
+            && $green"Particl staking disabled\n"
+    } || $red"Failed\n"
+else # Abort
+    $red"Invalid selection. Doing nothing\n"
+fi
