@@ -104,22 +104,6 @@ detect_os_arch() {
         INIT_TOR="pkill tor && tor"
         $green"\n\nDetected MacOS"
         $nocolor
-    elif type -p apt > /dev/null; then
-        if [[ $USER = amnesia ]]; then
-            $green"\n\nDetected Tails"
-            $nocolor
-        else
-            $green"\n\nDetected Debian"
-            $nocolor
-        fi
-        # Debian / Ubuntu / Mint
-        INSTALL="sudo apt install"
-        UPDATE="sudo apt update"
-        DEPENDENCY="pipx python3-venv libpython3-dev gnupg pkg-config gcc libc-dev --no-install-recommends"
-        if [[ ! $(type -p uv) ]]; then
-            PIPX_UV="pipx install uv"
-        fi
-        INIT_TOR=$SYSTEMD_TOR
     elif type -p dnf > /dev/null; then
         # Fedora
         INSTALL="sudo dnf install"
@@ -136,6 +120,22 @@ detect_os_arch() {
         INIT_TOR=$SYSTEMD_TOR
         $green"\n\nDetected Arch Linux"
         $nocolor
+    elif type -p apt > /dev/null; then
+        if [[ $USER = amnesia ]]; then
+            $green"\n\nDetected Tails"
+            $nocolor
+        else
+            $green"\n\nDetected Debian"
+            $nocolor
+        fi
+        # Debian / Ubuntu / Mint
+        INSTALL="sudo apt install"
+        UPDATE="sudo apt update"
+        DEPENDENCY="pipx python3-venv libpython3-dev gnupg pkg-config gcc libc-dev --no-install-recommends"
+        if [[ ! $(type -p uv) ]]; then
+            PIPX_UV="pipx install uv"
+        fi
+        INIT_TOR=$SYSTEMD_TOR
     else
         $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n"
         $nocolor
