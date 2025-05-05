@@ -48,10 +48,12 @@ detect_os_arch
 
 ## Update & Install dependencies
 printf "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding\n\n"
-$green"$UPDATE\n$INSTALL $DEPENDENCY curl automake libtool jq\n"
+$green"$UPDATE\n$INSTALL curl automake libtool jq ${DEPENDENCY}\n"
 $nocolor
+
 $UPDATE
-$INSTALL $DEPENDENCY automake libtool jq
+$INSTALL curl automake libtool jq $DEPENDENCY
+${PIPX_UV:-}
 
 # Enable tor
 printf "\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
@@ -216,7 +218,13 @@ export particl_mnemonic="${particl_mnemonic}"
 export xmrrestoreheight="${xmrrestoreheight}"
 export tor_on="${tor_on}"
 export TAILS="${TAILS}"
-python3 -m venv "${SWAP_DATADIR}/venv"
+
+## Create venv
+if [[ $(type -p uv) ]]; then
+    uv venv -p 3.10 "${SWAP_DATADIR}/venv" --seed
+else
+    python3 -m venv "${SWAP_DATADIR}/venv"
+fi
 
 ## Activate venv
 activate_venv

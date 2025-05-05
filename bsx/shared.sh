@@ -49,17 +49,17 @@ is_running() {
 
 is_encrypted() {
     printf "BasicSwapDEX is currently:\n[1] Encrypted\n[2] Unencrypted\n\n"
-    $red"Note: this is a password that you setup via the GUI.\n"
-    $red"This is NOT the clientauth password\n\n"
+    $red"Note: This is a password that you setup via the GUI.\n"
+    $red"Note: This is NOT the clientauth password\n\n"
     $nocolor
     until [[ "$l" =~ ^[12]$ ]]; do
         read -p 'Select an option [1|2]: ' l
         case $l in
             1)
-                until [[ $pass1 ]] && [[ $pass1 == $pass2 ]]; do
-                    read -sp 'Enter your BasicSwap password: ' pass1
-                    read -sp $'\nRe-enter your BasicSwap password: ' pass2
-                    if [[ $pass1 == $pass2 ]]; then
+                until [[ $pass1 ]] && [[ $pass1 = $pass2 ]]; do
+                    read -sp 'Enter your existing BasicSwap encryption password: ' pass1
+                    read -sp $'\nRe-enter your BasicSwap encryption password: ' pass2
+                    if [[ $pass1 = $pass2 ]]; then
                         export WALLET_ENCRYPTION_PWD=$pass1
                     else
                         $red"\nThe passwords entered don't match. Try again\n\n"
@@ -80,7 +80,7 @@ is_encrypted() {
 
 # Check Tails
 is_tails() {
-    if [[ $USER == amnesia ]]; then
+    if [[ $USER = amnesia ]]; then
         export SWAP_DATADIR=$HOME/Persistent/coinswaps
         export TAILS=1
     fi
@@ -105,7 +105,7 @@ detect_os_arch() {
         $green"\n\nDetected MacOS"
         $nocolor
     elif type -p apt > /dev/null; then
-        if [[ $USER == amnesia ]]; then
+        if [[ $USER = amnesia ]]; then
             $green"\n\nDetected Tails"
             $nocolor
         else
@@ -115,7 +115,10 @@ detect_os_arch() {
         # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
-        DEPENDENCY="python3-pip python3-venv gnupg pkg-config"
+        DEPENDENCY="pipx python3-venv libpython3-dev gnupg pkg-config gcc libc-dev --no-install-recommends"
+        if [[ ! $(type -p uv) ]]; then
+            PIPX_UV="pipx install uv"
+        fi
         INIT_TOR=$SYSTEMD_TOR
     elif type -p dnf > /dev/null; then
         # Fedora
@@ -129,7 +132,7 @@ detect_os_arch() {
         # Arch Linux
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
-        DEPENDENCY="curl python-pipenv gnupg pkgconf base-devel"
+        DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
         INIT_TOR=$SYSTEMD_TOR
         $green"\n\nDetected Arch Linux"
         $nocolor
