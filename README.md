@@ -19,21 +19,34 @@ Other dependencies vary by distribution and are handled by the installer.
 ### New Installation
 
 ```bash
-git clone https://github.com/nahuhh/basicswap-bash
-cd basicswap-bash && ./install.sh
+# Clone repo
+git clone https://github.com/nahuhh/basicswap-bash \
+&& cd basicswap-bash || exit
+
+# Install BasicSwap
+./basicswap-install.sh
+
+# Cleanup
 cd .. && rm -rf basicswap-bash
 ```
 
-### Update scripts from older versions
+### Update scripts from much older versions
 
 ```bash
+# Clone repo
 cd ~/coinswaps/basicswap
-git clone https://github.com/nahuhh/basicswap-bash
+git clone https://github.com/nahuhh/basicswap-bash || exit
 cd basicswap-bash
+
+# Install scripts
 mkdir -p $HOME/.local/bin
 rm -r $HOME/.local/bin/bsx
 cp -r basic* bsx* $HOME/.local/bin/
+
+# Cleanup
 cd .. && rm -rf basicswap-bash
+
+# Run update
 bsx-update
 ```
 
@@ -49,6 +62,18 @@ basicswap-bash
 bsx-update
 ```
 
+#### Enable/Disable Particl staking
+
+```bash
+bsx-staking
+```
+
+#### Enable/Disable client auth password
+
+```bash
+bsx-clientauth
+```
+
 #### Enable/Disable Tor [post install]
 
 ```
@@ -59,7 +84,7 @@ bsx-enabletor
 bsx-disabletor
 ```
 
-#### Add/disable coins
+#### Enable/Disable coins
 
 ```
 bsx-addcoin
