@@ -157,15 +157,14 @@ until [[ "$l" =~ ^[12]$ ]]; do
             tries=0
             until [[ $xmrrestoreheight ]]; do
                 if [[ $tries -eq 3 ]]; then
-                    echo "Failed to get Monero blockchain height. Please run the installer again."
+                    echo "Failed to get Monero blockchain height. Please run the installer again.\n"
                     exit 1
                 fi
                 tries=$((tries + 1))
-                $green"Attempt ${tries}/3 to set restore height"
+                $green"Attempt ${tries}/3 to set restore height\n"
                 xmrrestoreheight=$(timeout 10s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
             done
             $green"BasicSwapDEX will run the Monero node for you.\n"
-            $nocolor
             $green"Monero wallet Restore Height set to ${xmrrestoreheight}\n"
             $nocolor
             ;;
