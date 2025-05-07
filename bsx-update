@@ -29,8 +29,12 @@ else
     cd basicswap-bash
 fi
 
+# Cleanup old
+[[ -f $HOME/.local/bin/install.sh ]] && rm $HOME/.local/bin/install.sh
+
 # Move scripts
-rm -rf $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
-cp -r basic* bsx* $HOME/.local/bin/;
+rm -r $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
+cp -r basicswap-bash bsx* $HOME/.local/bin/.;
+
 # Update BasicSwap, coincurve and coin cores
 $HOME/.local/bin/bsx/update.sh

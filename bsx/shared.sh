@@ -90,7 +90,7 @@ is_tails() {
 detect_os_arch() {
     if [[ $(uname -s) = "Darwin" ]]; then
         # MacOS
-        export MACOS=1
+        MACOS=1
         if type -p brew > /dev/null; then
             $green"Homebrew is installed\n"
             $nc
@@ -106,6 +106,7 @@ detect_os_arch() {
         $nocolor
     elif type -p dnf > /dev/null; then
         # Fedora
+        FEDORA=1
         INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
         DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
@@ -114,6 +115,7 @@ detect_os_arch() {
         $nocolor
     elif type -p pacman > /dev/null; then
         # Arch Linux
+        ARCH=1
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
@@ -121,14 +123,16 @@ detect_os_arch() {
         $green"\n\nDetected Arch Linux"
         $nocolor
     elif type -p apt > /dev/null; then
+        # Debian / Ubuntu / Mint / Tails
         if [[ $USER = amnesia ]]; then
+            TAILS=1
             $green"\n\nDetected Tails"
             $nocolor
         else
+            DEBIAN=1
             $green"\n\nDetected Debian"
             $nocolor
         fi
-        # Debian / Ubuntu / Mint
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
         DEPENDENCY="pipx python3-venv libpython3-dev gnupg pkg-config gcc libc-dev --no-install-recommends"

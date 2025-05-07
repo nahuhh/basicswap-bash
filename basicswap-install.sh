@@ -190,7 +190,7 @@ fi
 if [[ -z $trasherdk ]]; then
 
     # Bash
-    if [[ -f $HOME/.bashrc ]]; then
+    if [[ -f $HOME/.bashrc ]] || [[ $DEBIAN ]]; then
         echo "export $addpath" | tee -a $HOME/.bashrc
     fi
     # Zsh
@@ -208,7 +208,7 @@ fi
 if [[ -d $HOME/.local/bin/bsx ]]; then
     rm -r $HOME/.local/bin/bsx* $HOME/.local/bin/basicswap-bash
 fi
-cp -r basicswap-bash bsx* $HOME/.local/bin/
+cp -r basicswap-bash bsx* $HOME/.local/bin/.
 
 ## Make venv and set variables for install
 export monerod_addr="${monerod_addr}"
@@ -217,6 +217,7 @@ export particl_mnemonic="${particl_mnemonic}"
 export xmrrestoreheight="${xmrrestoreheight}"
 export tor_on="${tor_on}"
 export TAILS="${TAILS}"
+export MACOS="${MACOS}"
 
 ## Create venv
 if [[ $(type -p uv) ]]; then
