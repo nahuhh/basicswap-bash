@@ -41,7 +41,7 @@ cd basicswap-bash
 # Install scripts
 mkdir -p $HOME/.local/bin
 rm -r $HOME/.local/bin/bsx
-cp -r basic* bsx* $HOME/.local/bin/
+cp -r basicswap-bash bsx* $HOME/.local/bin/
 
 # Cleanup
 cd .. && rm -rf basicswap-bash
