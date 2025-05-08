@@ -38,7 +38,7 @@ is_running() {
         bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
         if [[ $bsx_pid ]]; then
             bsx_run=$(pgrep particld | grep $bsx_pid)
-            if [[ ! $bsx_run ]]; then
+            if [[ $bsx_run ]]; then
                 $red"\nError: BasicSwapDEX is running.\n"
                 $nocolor
                 exit
