@@ -1,7 +1,12 @@
 #!/bin/bash
 source $HOME/.local/bin/bsx/shared.sh
 
-is_running
+if [[ $1 = "--force" ]]; then
+    $green"Force updating"
+    $nocolor
+else
+    is_running
+fi
 is_tails
 
 # Cleanup old version
@@ -14,16 +19,22 @@ fi
 # Download updated scripts
 echo "Updating basicswap-bash scripts" && sleep 1
 
-cd $SWAP_DATADIR/basicswap
+cd $SWAP_DATADIR/basicswap || {
+    $red"Cannot find datadir. Update failed\n"
+    $nocolor
+    exit
+}
 if [[ -d basicswap-bash ]]; then
     cd basicswap-bash
     git pull || {
         $red"Failed to update repo. Cancelling update.\n"
+        $nocolor
         exit
     }
 else
     git clone https://github.com/nahuhh/basicswap-bash || {
         $red"Failed to clone repo. Cancelling update.\n"
+        $nocolor
         exit
     }
     cd basicswap-bash
