@@ -3,6 +3,13 @@
 # Set working directory
 export SWAP_DATADIR=$HOME/coinswaps
 
+# tor variables
+export TOR_PROXY_PORT=19050
+export TOR_CONTROL_PORT=19051
+export TOR_DNS_PORT=15353
+export BSX_LOCAL_TOR=true          # sets host to 127.0.0.1
+export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
+
 # Colors
 red="printf \e[31;1m"
 green="printf \e[32;1m"
@@ -78,6 +85,51 @@ is_encrypted() {
     done
 }
 
+# Start tor
+start_tor() {
+    use_tor=$(jq .use_tor $SWAP_DATADIR/basicswap.json)
+    tor_config=$(jq .tor_proxy_port $SWAP_DATADIR/basicswap.json)
+
+    if [[ ${use_tor} = true ]]; then
+
+        [[ ${tor_config} -eq 9050 ]] && bsx-enabletor
+        [[ ! -f $SWAP_DATADIR/tor/tor.pid ]] && touch $SWAP_DATADIR/tor/tor.pid
+        pid() { cat $SWAP_DATADIR/tor/tor.pid; }
+        check_tor() { pgrep tor | grep $(pid); }
+        if ! check_tor; then
+            tor -f $SWAP_DATADIR/tor/torrc &> /dev/null &
+            echo $! > $SWAP_DATADIR/tor/tor.pid
+            if check_tor; then
+                $green "Started Tor $(pid)\n"
+            else
+                $red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)\n"
+                exit 1
+            fi
+            $nocolor
+        else
+            $green "Tor running $(pid)\n"
+        fi
+    else
+        echo "Tor disabled"
+    fi
+}
+
+# Stop tor
+stop_tor() {
+    if [[ -f $SWAP_DATADIR/tor/tor.pid ]]; then
+        pid() { cat $SWAP_DATADIR/tor/tor.pid; }
+        tor_run=$(pgrep tor | grep $(pid))
+        if [[ -n ${tor_run} ]]; then
+            while kill $(pid) &> /dev/null; do
+                sleep 0.5
+            done
+            echo "Killed Tor $(pid)"
+        else
+            echo "Tor not running"
+        fi
+    fi
+}
+
 # Check Tails
 is_tails() {
     if [[ $USER = amnesia ]]; then
@@ -101,7 +153,6 @@ detect_os_arch() {
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
         DEPENDENCY="python gnupg pkg-config"
-        INIT_TOR="pkill tor && tor"
         $green"\n\nDetected MacOS"
         $nocolor
     elif type -p dnf > /dev/null; then
@@ -110,7 +161,6 @@ detect_os_arch() {
         INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
         DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
-        INIT_TOR=$SYSTEMD_TOR
         $green"\n\nDetected Fedora"
         $nocolor
     elif type -p pacman > /dev/null; then
@@ -119,7 +169,6 @@ detect_os_arch() {
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
-        INIT_TOR=$SYSTEMD_TOR
         $green"\n\nDetected Arch Linux"
         $nocolor
     elif type -p apt > /dev/null; then
@@ -139,7 +188,6 @@ detect_os_arch() {
         if [[ ! $(type -p uv) ]]; then
             PIPX_UV="pipx install uv"
         fi
-        INIT_TOR=$SYSTEMD_TOR
     else
         $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n"
         $nocolor
