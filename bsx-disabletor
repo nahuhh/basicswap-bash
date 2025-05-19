@@ -5,4 +5,6 @@ is_tails
 is_running
 
 activate_venv
-$HOME/.local/bin/bsx/disabletor.sh
+
+basicswap-prepare --datadir=$SWAP_DATADIR --disabletor
+stop_tor
