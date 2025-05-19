@@ -1,8 +1,9 @@
 #!/bin/bash
 source $HOME/.local/bin/bsx/shared.sh
 
-is_running
 is_tails
+is_running
+start_tor || exit
 
 activate_venv
 $HOME/.local/bin/bsx/startup.sh
