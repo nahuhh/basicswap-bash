@@ -1,8 +1,8 @@
 #!/bin/bash
 source $HOME/.local/bin/bsx/shared.sh
 
-is_running
 is_tails
+is_running
 
 export disablecoin="$1"
 
