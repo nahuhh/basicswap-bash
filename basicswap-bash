@@ -6,4 +6,4 @@ is_running
 start_tor || exit
 
 activate_venv
-$HOME/.local/bin/bsx/startup.sh
+basicswap-run --datadir=$SWAP_DATADIR

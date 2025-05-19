@@ -26,10 +26,10 @@ fi
 if [[ "${TAILS}" ]]; then
     torsocks $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes \
         && torsocks $SWAP_DATADIR/venv/bin/pip3 install . || {
-            $red"Installation failed"
-            $nocolor
-            exit 1
-        }
+        $red"Installation failed"
+        $nocolor
+        exit 1
+    }
 else
     $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
     $SWAP_DATADIR/venv/bin/pip3 install .
