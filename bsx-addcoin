@@ -1,9 +1,10 @@
 #!/bin/bash
 source $HOME/.local/bin/bsx/shared.sh
 
-is_running
 is_tails
+is_running
 is_encrypted
+start_tor || exit
 
 export addcoin="$1"
 
