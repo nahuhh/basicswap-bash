@@ -8,13 +8,11 @@ if [[ -f $SWAP_DATADIR/particl/particl.pid ]]; then
     bsx_pid=$(cat $SWAP_DATADIR/particl/particl.pid)
     bsx_run=$(pgrep particld | grep $bsx_pid)
     if ! [[ $bsx_run ]]; then
-        $red"\nError: BasicSwapDEX must be running.\n"
-        $nocolor
+        red "\nError: BasicSwapDEX must be running.\n"
         exit
     fi
 else
-    $red"\nError: BasicSwapDEX must be running.\n"
-    $nocolor
+    red "\nError: BasicSwapDEX must be running.\n"
     exit
 fi
 

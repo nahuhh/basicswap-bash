@@ -7,8 +7,7 @@ is_running
 activate_venv
 
 printf "[1] Enable client auth\n[2] Disable client auth\n\n"
-$red"NOTE: this a different password than your Wallet Encryption\n"
-$nocolor
+red "NOTE: this a different password than your Wallet Encryption\n"
 until [[ "$l" =~ ^[12]$ ]]; do
     read -p 'Select an option [1|2]: ' l
     case $l in
@@ -20,24 +19,20 @@ until [[ "$l" =~ ^[12]$ ]]; do
                     CLIENT_AUTH=$pass1
                     basicswap-prepare --datadir=$SWAP_DATADIR --client-auth-password="${CLIENT_AUTH}"
                     printf "\nThe auth is: "
-                    $green'"admin:<password>"\n\n'
-                    $nocolor
+                    green '"admin:<password>"\n\n'
                     printf "For the AMM, add: "
-                    $green'"auth": "admin:<password>"'
-                    $nocolor" to your createoffers.json\n\n"
+                    green '"auth": "admin:<password>"'
                 else
-                    $red"\nThe passwords entered don't match. Try again\n\n"
-                    $nocolor
+                    red "\nThe passwords entered don't match. Try again\n\n"
                 fi
             done
             ;;
         2)
-            $nocolor"\Disabling client auth\n"
+            printf "\nDisabling client auth\n"
             basicswap-prepare --datadir=$SWAP_DATADIR --disable-client-auth
             ;;
         *)
-            $red"You must answer 1 or 2\n"
-            $nocolor
+            red "You must answer 1 or 2\n"
             ;;
     esac
 done

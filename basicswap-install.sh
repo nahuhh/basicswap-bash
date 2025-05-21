@@ -19,8 +19,7 @@ if [[ -f "${SWAP_DATADIR}/basicswap.json" ]]; then
     abort=1
 fi
 if [[ $abort ]]; then
-    $red"Aborting install\n"
-    $nocolor
+    red "Aborting install\n"
     exit
 fi
 
@@ -28,7 +27,7 @@ fi
 is_running
 
 # Title Bar
-$green "\n"
+printf "\e[32;1m\n"
 title="BasicSwapDEX Installer"
 COLUMNS=$(tput cols)
 title_size=${#title}
@@ -36,7 +35,6 @@ span=$(((COLUMNS + title_size) / 2))
 printf "%${COLUMNS}s" " " | tr " " "#"
 printf "%${span}s\n" "$title"
 printf "%${COLUMNS}s" " " | tr " " "#"
-$nocolor
 
 # Detect Operating system
 INSTALL=""
@@ -48,11 +46,9 @@ detect_os_arch
 
 ## Update & Install dependencies
 printf "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding\n\n"
-$green"$UPDATE\n$INSTALL curl automake libtool jq ${DEPENDENCY}\n"
-$nocolor
+green "$UPDATE\n$INSTALL curl automake libtool jq ${DEPENDENCY}\n"
 
-$UPDATE
-$INSTALL curl automake libtool jq $DEPENDENCY
+$UPDATE && $INSTALL curl automake libtool jq $DEPENDENCY || printf "Skipping dependency installation\n"
 ${PIPX_UV:-}
 
 # Enable tor
@@ -61,16 +57,13 @@ until [[ "$tor_on" =~ ^[12]$ ]]; do
     read -p 'Select an option: [1|2]: ' tor_on
     case $tor_on in
         1)
-            $green"BasicSwapDEX will use Tor\n"
-            $nocolor
+            green "BasicSwapDEX will use Tor\n"
             ;;
         2)
-            $red"BasicSwapDEX will NOT use Tor\n"
-            $nocolor
+            red "BasicSwapDEX will NOT use Tor\n"
             ;;
         *)
-            $red"You must answer 1 or 2\n"
-            $nocolor
+            red "You must answer 1 or 2\n"
             ;;
     esac
 done
@@ -81,8 +74,7 @@ until [[ "$restore" =~ ^[12]$ ]]; do
     read -p 'Select an option: [1|2]: ' restore
     case $restore in
         1)
-            $green"Installing BasicSwapDEX\n"
-            $nocolor
+            green "Installing BasicSwapDEX\n"
             ;;
         2)
             until [[ "$wordcount" = "24" ]]; do
@@ -90,17 +82,14 @@ until [[ "$restore" =~ ^[12]$ ]]; do
                 wordcount=$(echo $particl_mnemonic | wc -w)
                 if [[ $wordcount = 24 ]]; then
                     printf "Restoring BasicSwapDEX\n"
-                    $green"$particl_mnemonic\n"
-                    $nocolor
+                    green "$particl_mnemonic\n"
                 else
-                    $red"Try again. Seed must be 24 words\n"
-                    $nocolor
+                    red "Try again. Seed must be 24 words\n"
                 fi
             done
             ;;
         *)
-            $red"You must answer 1 or 2\n"
-            $nocolor
+            red "You must answer 1 or 2\n"
             ;;
     esac
 done
@@ -110,18 +99,15 @@ if [[ $particl_mnemonic ]]; then
     read -p $'\nEnter a restore height for your BasicSwap XMR wallet? [Y/n] ' height
     case $height in
         n | N)
-            $red"Not using a custom XMR Restore height\n"
-            $nocolor
+            red "Not using a custom XMR Restore height\n"
             ;;
         *)
             until [[ "$xmrrestoreheight" =~ ^[0-9]{1,7}$ ]]; do
                 read -p $'Enter your Monero Restore Height [example: 2548568] ' xmrrestoreheight
                 if [[ $xmrrestoreheight =~ ^[0-9]{7}$ ]]; then
-                    $green"Your XMR Restore height: $xmrrestoreheight\n"
-                    $nocolor
+                    green "Your XMR Restore height: $xmrrestoreheight\n"
                 else
-                    $red"Try again. Must be 1-7 digits\n"
-                    $nocolor
+                    red "Try again. Must be 1-7 digits\n"
                 fi
             done
             ;;
@@ -139,19 +125,16 @@ until [[ "$l" =~ ^[12]$ ]]; do
                 read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
                 checknode=$(timeout 10s curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
                 if [[ $checknode ]]; then
-                    $green"Successfully connected to the XMR node @ $monerod_addr:$monerod_port\n"
-                    $nocolor
+                    green "Successfully connected to the XMR node @ $monerod_addr:$monerod_port\n"
                 else
-                    $red"The node at $monerod_addr:$monerod_port is not accessible. Try again\n"
-                    $nocolor
+                    red "The node at $monerod_addr:$monerod_port is not accessible. Try again\n"
                 fi
 
             done
             if [[ -z $xmrrestoreheight ]]; then
                 xmrrestoreheight="${checknode}"
             fi
-            $green"Monero wallet Restore Height set to ${xmrrestoreheight}\n"
-            $nocolor
+            green "Monero wallet Restore Height set to ${xmrrestoreheight}\n"
             ;;
         2)
             tries=0
@@ -161,16 +144,14 @@ until [[ "$l" =~ ^[12]$ ]]; do
                     exit 1
                 fi
                 tries=$((tries + 1))
-                $green"Attempt ${tries}/3 to set restore height\n"
+                green "Attempt ${tries}/3 to set restore height\n"
                 xmrrestoreheight=$(timeout 10s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
             done
-            $green"BasicSwapDEX will run the Monero node for you.\n"
-            $green"Monero wallet Restore Height set to ${xmrrestoreheight}\n"
-            $nocolor
+            green "BasicSwapDEX will run the Monero node for you.\n"
+            green "Monero wallet Restore Height set to ${xmrrestoreheight}\n"
             ;;
         *)
-            $red"You must answer 1 or 2\n"
-            $nocolor
+            red "You must answer 1 or 2\n"
             ;;
     esac
 done
