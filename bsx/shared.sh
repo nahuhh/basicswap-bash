@@ -11,9 +11,8 @@ export BSX_LOCAL_TOR=true          # sets host to 127.0.0.1
 export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
 
 # Colors
-red="printf \e[31;1m"
-green="printf \e[32;1m"
-nocolor="printf \e[0m"
+red() { printf "\e[31;1m$*\e[0m"; }
+green() { printf "\e[32;1m$*\e[0m"; }
 
 # Coins
 coins=$(
@@ -46,8 +45,7 @@ is_running() {
         if [[ $bsx_pid ]]; then
             bsx_run=$(pgrep particld | grep $bsx_pid)
             if [[ $bsx_run ]]; then
-                $red"\nError: BasicSwapDEX is running.\n"
-                $nocolor
+                red "\nError: BasicSwapDEX is running.\n"
                 exit
             fi
         fi
@@ -56,9 +54,8 @@ is_running() {
 
 is_encrypted() {
     printf "BasicSwapDEX is currently:\n[1] Encrypted\n[2] Unencrypted\n\n"
-    $red"Note: This is a password that you setup via the GUI.\n"
-    $red"Note: This is NOT the clientauth password\n\n"
-    $nocolor
+    red "Note: This is a password that you setup via the GUI.\n"
+    red "Note: This is NOT the clientauth password\n\n"
     until [[ "$l" =~ ^[12]$ ]]; do
         read -p 'Select an option [1|2]: ' l
         case $l in
@@ -69,17 +66,15 @@ is_encrypted() {
                     if [[ $pass1 = $pass2 ]]; then
                         export WALLET_ENCRYPTION_PWD=$pass1
                     else
-                        $red"\nThe passwords entered don't match. Try again\n\n"
-                        $nocolor
+                        red "\nThe passwords entered don't match. Try again\n\n"
                     fi
                 done
                 ;;
             2)
-                $nocolor"\nProceeding without a password\n"
+                printf "\nProceeding without a password\n"
                 ;;
             *)
-                $red"You must answer 1 or 2\n"
-                $nocolor
+                red "You must answer 1 or 2\n"
                 ;;
         esac
     done
@@ -100,14 +95,13 @@ start_tor() {
             tor -f $SWAP_DATADIR/tor/torrc &> /dev/null &
             echo $! > $SWAP_DATADIR/tor/tor.pid
             if check_tor; then
-                $green "Started Tor $(pid)\n"
+                green "Started Tor $(pid)\n"
             else
-                $red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)\n"
+                red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)\n"
                 exit 1
             fi
-            $nocolor
         else
-            $green "Tor running $(pid)\n"
+            green "Tor running $(pid)\n"
         fi
     else
         echo "Tor disabled"
@@ -144,43 +138,36 @@ detect_os_arch() {
         # MacOS
         MACOS=1
         if type -p brew > /dev/null; then
-            $green"Homebrew is installed\n"
-            $nc
+            green "Homebrew is installed\n"
             INSTALL="brew install"
         else
-            $green"Installing Homebrew\n"
-            $nc
+            green "Installing Homebrew\n"
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
         DEPENDENCY="python gnupg pkg-config"
-        $green"\n\nDetected MacOS"
-        $nocolor
+        green "\n\nDetected MacOS"
     elif type -p dnf > /dev/null; then
         # Fedora
         FEDORA=1
         INSTALL="sudo dnf install"
         UPDATE="sudo dnf check-update"
         DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
-        $green"\n\nDetected Fedora"
-        $nocolor
+        green "\n\nDetected Fedora"
     elif type -p pacman > /dev/null; then
         # Arch Linux
         ARCH=1
         INSTALL="sudo pacman -S"
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
-        $green"\n\nDetected Arch Linux"
-        $nocolor
+        green "\n\nDetected Arch Linux"
     elif type -p apt > /dev/null; then
         # Debian / Ubuntu / Mint / Tails
         if [[ $USER = amnesia ]]; then
             TAILS=1
-            $green"\n\nDetected Tails"
-            $nocolor
+            green "\n\nDetected Tails"
         else
             DEBIAN=1
-            $green"\n\nDetected Debian"
-            $nocolor
+            green "\n\nDetected Debian"
         fi
         INSTALL="sudo apt install"
         UPDATE="sudo apt update"
@@ -189,8 +176,7 @@ detect_os_arch() {
             PIPX_UV="pipx install uv"
         fi
     else
-        $red"\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n"
-        $nocolor
+        red "\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n"
         exit
     fi
 }
