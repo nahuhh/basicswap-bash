@@ -2,8 +2,7 @@
 source $HOME/.local/bin/bsx/shared.sh
 
 if [[ $1 = "--force" ]]; then
-    $green"Force updating"
-    $nocolor
+    green "Force updating"
 else
     is_running
 fi
@@ -20,21 +19,18 @@ fi
 echo "Updating basicswap-bash scripts" && sleep 1
 
 cd $SWAP_DATADIR/basicswap || {
-    $red"Cannot find datadir. Update failed\n"
-    $nocolor
+    red "Cannot find datadir. Update failed\n"
     exit
 }
 if [[ -d basicswap-bash ]]; then
     cd basicswap-bash
     git pull || {
-        $red"Failed to update repo. Cancelling update.\n"
-        $nocolor
+        red "Failed to update repo. Cancelling update.\n"
         exit
     }
 else
     git clone https://github.com/nahuhh/basicswap-bash -b localtor || {
-        $red"Failed to clone repo. Cancelling update.\n"
-        $nocolor
+        red "Failed to clone repo. Cancelling update.\n"
         exit
     }
     cd basicswap-bash
