@@ -32,7 +32,7 @@ if [[ -d basicswap-bash ]]; then
         exit
     }
 else
-    git clone https://github.com/nahuhh/basicswap-bash || {
+    git clone https://github.com/nahuhh/basicswap-bash -b localtor || {
         $red"Failed to clone repo. Cancelling update.\n"
         $nocolor
         exit
@@ -45,7 +45,7 @@ fi
 
 # Move scripts
 rm -r $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-bash
-cp -r basicswap-bash bsx* $HOME/.local/bin/.;
+cp -r basicswap-bash bsx* $HOME/.local/bin/. ;
 
 # Update BasicSwap, coincurve and coin cores
 $HOME/.local/bin/bsx/update.sh
