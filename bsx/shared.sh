@@ -155,8 +155,8 @@ detect_os_arch() {
         green "\n\nDetected Arch Linux"
     elif type -P apk > /dev/null; then
         # Alpine Linux
-        INSTALL="sudo apk add"
-        UPDATE="sudo apk update"
+        INSTALL="doas apk add"
+        UPDATE="doas apk update"
         DEPENDENCY="py3-virtualenv python3-dev gnupg gcc musl-dev"
         green "\nDetected Alpine Linux"
     elif type -p apt > /dev/null; then
