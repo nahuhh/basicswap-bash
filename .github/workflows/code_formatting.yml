@@ -1,0 +1,21 @@
+name: formatting
+
+on: [pull_request, push]
+
+permissions:
+  contents: read
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout/@v4
+
+    - name: Install dependencies
+      run: |
+        npm install prettier prettier-plugin-sh --save-dev
+
+    - name: Run Prettier
+      run: |
+        npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
+        [[ $(git diff) ]] && git diff && exit 1 || exit 0
