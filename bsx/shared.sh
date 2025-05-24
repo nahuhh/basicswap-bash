@@ -155,7 +155,7 @@ detect_os_arch() {
     elif type -p pacman > /dev/null; then
         # Arch Linux
         ARCH=1
-        INSTALL="sudo pacman -S"
+        INSTALL="sudo pacman -S --needed"
         UPDATE="sudo pacman -Syu"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
         green "\n\nDetected Arch Linux"
