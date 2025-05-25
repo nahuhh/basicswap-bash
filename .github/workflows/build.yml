@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
+    types:
+      - opened
+      - reopened
+      - syncronize
+  push:
+#    branches:
+#      - master
+    paths-ignore:
+      - 'README.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout/@v4
+    - name: Install dependencies
+      run: |
+        npm install prettier prettier-plugin-sh --save-dev
+    - name: Run Prettier
+      run: |
+        npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
+        [[ $(git diff) ]] && git diff && exit 1 || exit 0
+
+  build:
+    needs: formatting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout/@v4
+    - name: Install basicswap-bash
+      run: |
+        ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run basicswap-bash
+      run: |
+        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
