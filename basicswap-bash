@@ -6,4 +6,4 @@ is_running
 start_tor || exit
 
 activate_venv
-basicswap-run --datadir=$SWAP_DATADIR
+basicswap-run --datadir=$SWAP_DATADIR ${1:-} || red "Failed to run basicswap-bash\n"

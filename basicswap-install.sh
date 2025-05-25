@@ -54,7 +54,11 @@ ${PIPX_UV:-}
 # Enable tor
 printf "\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
-    read -p 'Select an option: [1|2]: ' tor_on
+    if [[ "$1 $2 $3" == *"tor"* ]]; then
+        tor_on=1
+    else
+        read -p 'Select an option: [1|2]: ' tor_on
+    fi
     case $tor_on in
         1)
             green "BasicSwapDEX will use Tor\n"
@@ -71,7 +75,11 @@ done
 ## Particl restore Seed
 printf "\n[1] New Install\n[2] Restore from Particl Seed\n"
 until [[ "$restore" =~ ^[12]$ ]]; do
-    read -p 'Select an option: [1|2]: ' restore
+    if [[ "$1 $2 $3" == *"new"* ]]; then
+        restore=1
+    else
+        read -p 'Select an option: [1|2]: ' restore
+    fi
     case $restore in
         1)
             green "Installing BasicSwapDEX\n"
@@ -116,9 +124,13 @@ fi
 
 ## Configure Monero
 printf "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)\n"
-until [[ "$l" =~ ^[12]$ ]]; do
-    read -p 'Select an option [1|2]: ' l
-    case $l in
+until [[ "$node" =~ ^[12]$ ]]; do
+    if [[ "$1 $2 $3" == *"internal"* ]]; then
+        node=2
+    else
+        read -p 'Select an option [1|2]: ' node
+    fi
+    case $node in
         1)
             until [[ $checknode ]]; do
                 read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
