@@ -29,33 +29,35 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require ('fs')
-          const diff = fs.readFileSync('diff.diff', 'utf8');
-          if (diff)
+          if (fs.existsSync('diff.diff'))
           {
-            const diffComment = `<details><summary>Diff</summary>\n\n\`\`\`diff\n${diff}\n\`\`\`\n</details>`;
-            const existingComment = await github.issues.getComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const commentId = existingComment.data.find(comment => comment.body.startsWith('<details><summary>Diff</summary>'))?.id;
-            if (commentId) {
-              await github.issues.updateComment({
+            const diff = fs.readFileSync('diff.diff', 'utf8');
+            if (diff)
+            {
+              const diffComment = `<details><summary>Diff</summary>\n\n\`\`\`diff\n${diff}\n\`\`\`\n</details>`;
+              const existingComment = await github.issues.getComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: commentId,
-                body: diffComment,
-              });
-            } else {
-              const newComment = await github.issues.createComment({
                 issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: diffComment,
               });
+              const commentId = existingComment.data.find(comment => comment.body.startsWith('<details><summary>Diff</summary>'))?.id;
+              if (commentId) {
+                await github.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: commentId,
+                  body: diffComment,
+                });
+              } else {
+                const newComment = await github.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: diffComment,
+                });
+              }
             }
           }
-
   build:
     needs: formatting
     runs-on: ubuntu-latest
