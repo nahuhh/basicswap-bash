@@ -1,0 +1,24 @@
+name: build
+
+on: [pull_request, push]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout/@v4
+
+    #- name: Install dependencies
+    #  run: |
+    #    npm install prettier prettier-plugin-sh --save-dev
+
+    - name: Install basicswap-bash
+      run: |
+        ./basicswap-install.sh --new --tor --internal
