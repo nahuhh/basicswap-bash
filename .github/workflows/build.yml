@@ -12,6 +12,8 @@ permissions:
 jobs:
   formatting:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
     - uses: actions/checkout/@v4
     - name: Install dependencies
@@ -20,7 +22,38 @@ jobs:
     - name: Run Prettier
       run: |
         npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
-        [[ $(git diff) ]] && git diff && exit 1 || exit 0
+        [[ $(git diff) ]] && git diff > diff.diff && exit 1 || exit 0
+    - name: Comment diff
+      run: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const diff = fs.readFileSync('diff.diff', 'utf8');
+          if (diff)
+          {
+            const diffComment = `<details><summary>Diff</summary>\n\n\`\`\`diff\n${diff}\n\`\`\`\n</details>`;
+            const existingComment = await github.issues.getComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const commentId = existingComment.data.find(comment => comment.body.startsWith('<details><summary>Diff</summary>'))?.id;
+            if (commentId) {
+              await github.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: commentId,
+                body: diffComment,
+              });
+            } else {
+              const newComment = await github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: diffComment,
+              });
+            }
+          }
 
   build:
     runs-on: ubuntu-latest
