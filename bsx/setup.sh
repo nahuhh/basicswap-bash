@@ -76,7 +76,7 @@ elif [[ "$monerod_addr" ]]; then
     enable_tor
 else
     # Setup new install using local nodes
-    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || {
+    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${regtest:-} || {
         red "Installation failed. Try again"
         exit
     }
