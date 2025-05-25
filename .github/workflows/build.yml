@@ -24,10 +24,11 @@ jobs:
         npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
         [[ $(git diff) ]] && git diff > diff.diff && exit 1 || exit 0
     - name: Comment diff
-      run: actions/github-script@v6
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          const fs = require ('fs')
           const diff = fs.readFileSync('diff.diff', 'utf8');
           if (diff)
           {
@@ -56,6 +57,7 @@ jobs:
           }
 
   build:
+    needs: formatting
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout/@v4
@@ -64,4 +66,5 @@ jobs:
         ./basicswap-install.sh --new --tor --internal --regtest
     - name: Run basicswap-bash
       run: |
-        timeout 30s ./basicswap-bash --regtest || exit 1
+        timeout 30s ./basicswap-bash --regtest
+

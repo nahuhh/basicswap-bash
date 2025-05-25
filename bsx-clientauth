@@ -9,7 +9,7 @@ activate_venv
 printf "[1] Enable client auth\n[2] Disable client auth\n\n"
 red "NOTE: this a different password than your Wallet Encryption\n"
 until [[ "$l" =~ ^[12]$ ]]; do
-    read -p 'Select an option [1|2]: ' l
+     read -p 'Select an option [1|2]: ' l
     case $l in
         1)
             until [[ $pass1 ]] && [[ $pass1 == $pass2 ]]; do
