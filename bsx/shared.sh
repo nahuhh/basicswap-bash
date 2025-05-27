@@ -151,15 +151,15 @@ detect_os_arch() {
     elif type -p dnf > /dev/null; then
         # Fedora
         FEDORA=1
-        INSTALL="sudo dnf install"
-        UPDATE="sudo dnf check-update"
+        INSTALL="sudo dnf install -y"
+        UPDATE="sudo dnf update -y"
         DEPENDENCY="python3-virtualenv python3-pip python3-devel gnupg2 pkgconf"
         green "\n\nDetected Fedora"
     elif type -p pacman > /dev/null; then
         # Arch Linux
         ARCH=1
-        INSTALL="sudo pacman -S --needed"
-        UPDATE="sudo pacman -Syu"
+        INSTALL="sudo pacman -S --noconfirm --needed"
+        UPDATE="sudo pacman -Syu --noconfirm"
         DEPENDENCY="python-pipenv gnupg pkgconf base-devel"
         green "\n\nDetected Arch Linux"
     elif type -p apt > /dev/null; then

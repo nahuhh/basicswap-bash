@@ -7,12 +7,12 @@ if [[ -d basicswap ]]; then
     cd $SWAP_DATADIR/basicswap
     git pull || {
         red "Failed to pull repo. Installation aborted"
-        exit
+        exit 1
     }
 else
     git clone https://github.com/basicswap/basicswap || {
         red "Failed to clone repo. Please run the installer again"
-        exit
+        exit 1
     }
     cd $SWAP_DATADIR/basicswap
 fi
@@ -48,7 +48,7 @@ if [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
     XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
         basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
         red "Installation failed. Try again"
-        exit
+        exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
     read -p "Press ENTER to continue. "
@@ -58,7 +58,7 @@ elif [[ "$particl_mnemonic" ]]; then
     PARTICL_MNEMONIC=$particl_mnemonic
     basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
         red "Installation failed. Try again"
-        exit
+        exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
     read -p "Press ENTER to continue. "
@@ -68,7 +68,7 @@ elif [[ "$monerod_addr" ]]; then
     XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
         basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || {
         red "Installation failed. Try again"
-        exit
+        exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
     red "\n\nIMPORTANT!! Make note of your seed above!!\n\n"
@@ -78,7 +78,7 @@ else
     # Setup new install using local nodes
     basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${regtest:-} || {
         red "Installation failed. Try again"
-        exit
+        exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
     red "\n\nIMPORTANT!! Make note of your seed above!!\n\n"

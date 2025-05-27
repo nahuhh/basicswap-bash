@@ -49,8 +49,46 @@ jobs:
       run: |
         timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
 
+  build-arch:
+    needs: formatting
+    name: 'Arch Linux'
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+    - uses: actions/checkout/@v4
+    - name: Install dependencies
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S sudo git --noconfirm
+    - name: Install basicswap-bash
+      run: |
+        ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run basicswap-bash
+      run: |
+        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+
+  build-fedora:
+    needs: formatting
+    name: 'Fedora'
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+    steps:
+    - uses: actions/checkout/@v4
+    - name: Install dependencies
+      run: |
+        dnf install git procps-ng -y
+    - name: Install basicswap-bash
+      run: |
+        ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run basicswap-bash
+      run: |
+        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+
   build-ubuntu:
-    needs: build-macos
+    needs: formatting
+    name: Ubuntu
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout/@v4
