@@ -195,6 +195,11 @@ if [[ -z $trasherdk ]]; then
         echo "export $addpath" | tee -a $HOME/.xsessionrc
     fi
 
+    if [[ -f $HOME/.bash_profile ]] || [[ $FEDORA ]]; then
+        echo "DEBUG: Using .bash_profile (Fedora)"
+        echo "export $addpath" | tee -a $HOME/.bash_profile
+    fi
+
 fi
 
 # Move scripts to .local/bin

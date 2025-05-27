@@ -85,6 +85,10 @@ jobs:
     - name: Install basicswap-bash
       run: |
         ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run bsx-update
+      run: |
+        source ~/.bash_profile && \
+        bsx-update
     - name: Run basicswap-bash
       run: |
         timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
