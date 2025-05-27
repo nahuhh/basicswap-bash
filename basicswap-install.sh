@@ -183,7 +183,7 @@ fi
 if [[ -z $trasherdk ]]; then
 
     # Bash
-    if [[ -f $HOME/.bashrc ]] || [[ $DEBIAN ]]; then
+    if [[ -f $HOME/.bashrc ]] || [[ $SHELL == *"bash"* ]]; then
         echo "export $addpath" | tee -a $HOME/.bashrc
     fi
     # Zsh

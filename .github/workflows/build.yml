@@ -13,6 +13,8 @@ on:
   push:
 #    branches:
 #      - master
+    branches-ignore:
+      - 'localtor'
     paths-ignore:
       - 'README.md'
 
@@ -50,7 +52,7 @@ jobs:
         bsx-update
     - name: Run basicswap-bash
       run: |
-        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
 
   build-arch:
     needs: formatting
@@ -67,9 +69,14 @@ jobs:
     - name: Install basicswap-bash
       run: |
         ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run bsx-update
+      run: |
+        source $HOME/.bashrc
+        bsx-update
     - name: Run basicswap-bash
       run: |
-        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+        source $HOME/.bashrc
+        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
 
   build-fedora:
     needs: formatting
@@ -85,9 +92,14 @@ jobs:
     - name: Install basicswap-bash
       run: |
         ./basicswap-install.sh --new --tor --internal --regtest
+    - name: Run bsx-update
+      run: |
+        source $HOME/.bashrc
+        bsx-update
     - name: Run basicswap-bash
       run: |
-        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+        source $HOME/.bashrc
+        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
 
   build-ubuntu:
     needs: formatting
@@ -103,4 +115,4 @@ jobs:
         bsx-update
     - name: Run basicswap-bash
       run: |
-        timeout 30s ./basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0

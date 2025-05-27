@@ -92,10 +92,10 @@ start_tor() {
         pid_file="$SWAP_DATADIR/tor/tor.pid"
         pid() { cat $pid_file; }
         check_tor() { [[ -f $pid_file ]] && pgrep tor | grep $(pid); }
-        if ! check_tor; then
+        if [[ ! $(check_tor) ]]; then
             tor -f $SWAP_DATADIR/tor/torrc &> /dev/null &
             echo $! > $pid_file
-            if check_tor; then
+            if [[ $(check_tor) ]]; then
                 green "Started Tor $(pid)\n"
             else
                 red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)\n"
@@ -115,14 +115,22 @@ stop_tor() {
     if [[ -f $pid_file ]]; then
         pid() { cat $pid_file; }
         check_tor() { pgrep tor | grep $(pid); }
-        if check_tor; then
-            while kill $(pid) &> /dev/null; do
-                sleep 0.5
-            done
-            echo "Killed Tor $(pid)"
-        else
-            echo "Tor not running"
-        fi
+        tries=0
+        pkill -F ${pid_file}
+        while [[ $(check_tor) ]]; do
+            ((tries++))
+            if [[ $tries -gt 5 ]]; then
+                red "Failed to stop tor $(pid)\n"
+                exit 0
+            fi
+            red "Stopping tor $(pid)\n"
+            sleep 1
+            if [[ ! $(check_tor) ]]; then
+                echo "Tor stopped successfully $(pid)"
+                exit 0
+            fi
+        done
+        echo "Tor not running"
     fi
 }
 
