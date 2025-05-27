@@ -135,7 +135,7 @@ until [[ "$node" =~ ^[12]$ ]]; do
             until [[ $checknode ]]; do
                 read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
                 read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
-                checknode=$(timeout 10s curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
+                checknode=$(timeout 15s curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
                 if [[ $checknode ]]; then
                     green "Successfully connected to the XMR node @ $monerod_addr:$monerod_port\n"
                 else
@@ -155,9 +155,9 @@ until [[ "$node" =~ ^[12]$ ]]; do
                     echo "Failed to get Monero blockchain height. Please run the installer again.\n"
                     exit 1
                 fi
-                tries=$((tries + 1))
+                ((tries++))
                 green "Attempt ${tries}/3 to set restore height\n"
-                xmrrestoreheight=$(timeout 10s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
+                xmrrestoreheight=$(timeout 15s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
             done
             green "BasicSwapDEX will run the Monero node for you.\n"
             green "Monero wallet Restore Height set to ${xmrrestoreheight}\n"

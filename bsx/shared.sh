@@ -141,12 +141,12 @@ detect_os_arch() {
         MACOS=1
         if type -p brew > /dev/null; then
             green "Homebrew is installed\n"
-            INSTALL="brew install"
+            INSTALL="brew install --quiet"
         else
             green "Installing Homebrew\n"
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
-        DEPENDENCY="python gnupg pkg-config"
+        DEPENDENCY="python gnupg pkg-config coreutils"
         green "\n\nDetected MacOS"
     elif type -p dnf > /dev/null; then
         # Fedora
