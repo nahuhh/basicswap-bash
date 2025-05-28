@@ -7,7 +7,7 @@ rm -rf $SWAP_DATADIR/basicswap/build
 # BasicSwap, coincurve, and dependencies
 # Switch to new repo: basicswap/basicswap
 cd $SWAP_DATADIR/basicswap
-git remote set-url origin https://github.com/basicswap/basicswap
+git remote set-url origin https://github.com/plowsof/basicswap
 
 # Conflicting messages_pb2.py from v0.12.7
 if [[ -f basicswap/messages_pb2.py ]]; then
