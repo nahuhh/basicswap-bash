@@ -29,7 +29,7 @@ if [[ -d basicswap-bash ]]; then
         exit
     }
 else
-    git clone https://github.com/nahuhh/basicswap-bash -b localtor || {
+    git clone https://github.com/nahuhh/basicswap-bash || {
         red "Failed to clone repo. Cancelling update.\n"
         exit
     }
