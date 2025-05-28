@@ -20,18 +20,18 @@ echo "Updating basicswap-bash scripts" && sleep 1
 
 cd $SWAP_DATADIR/basicswap || {
     red "Cannot find datadir. Update failed\n"
-    exit
+    exit 1
 }
 if [[ -d basicswap-bash ]]; then
     cd basicswap-bash
     git pull || {
         red "Failed to update repo. Cancelling update.\n"
-        exit
+        exit 1
     }
 else
     git clone https://github.com/nahuhh/basicswap-bash || {
         red "Failed to clone repo. Cancelling update.\n"
-        exit
+        exit 1
     }
     cd basicswap-bash
 fi
@@ -39,9 +39,5 @@ fi
 # Cleanup old
 [[ -f $HOME/.local/bin/install.sh ]] && rm $HOME/.local/bin/install.sh
 
-# Move scripts
-rm -r $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-*
-cp -r basicswap-bash bsx* $HOME/.local/bin/. ;
-
 # Update BasicSwap, coincurve and coin cores
-$HOME/.local/bin/bsx/update.sh
+./bsx/update.sh

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Move scripts
+rm -r $HOME/.local/bin/bsx $HOME/.local/bin/basicswap-*
+cp -r basicswap-bash bsx* $HOME/.local/bin/.
+
 echo "Updating BasicSwapDEX" && sleep 1
 # Delete dangling build folder. Same as --no-cache for docker
 rm -rf $SWAP_DATADIR/basicswap/build
@@ -23,4 +27,4 @@ $SWAP_DATADIR/venv/bin/pip3 install .
 $HOME/.local/bin/bsx/auto_coinupd8.sh
 
 # Cleanup
-rm -rf basicswap-bash
+cd $HOME && rm -rf $SWAP_DATADIR/basicswap/basicswap-bash
