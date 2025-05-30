@@ -38,73 +38,56 @@ jobs:
         npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
         [[ $(git diff) ]] && git diff && exit 1 || exit 0
 
+  build-linux-distros:
+    needs: formatting
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Ubuntu
+            os: ubuntu-latest
+            container: ""
+            install: ""
+            set-path: ""
+          - name: Fedora
+            os: ubuntu-latest
+            container: fedora:latest
+            install: dnf install git procps-ng -y
+            set-path: "source $HOME/.bashrc"
+          - name: Arch Linux
+            os: ubuntu-latest
+            container: archlinux:latest
+            install: pacman -Syu --noconfirm && pacman -S sudo git --noconfirm
+            set-path: "source $HOME/.bashrc"
+
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        if: ${{ matrix.install != '' }}
+        run: ${{ matrix.install }}
+      - name: Install basicswap-bash
+        run: |
+          ./basicswap-install.sh --new --tor --internal --regtest
+      - name: Run bsx-update
+        run: |
+          if [ -n "${{ matrix.set-path }}" ]; then
+            eval "${{ matrix.set-path }}"
+          fi
+          bsx-update
+      - name: Run basicswap-bash
+        run: |
+          if [ -n "${{ matrix.set-path }}" ]; then
+            eval "${{ matrix.set-path }}"
+          fi
+          timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
+
   build-macos:
     needs: formatting
     name: 'macOS (brew)'
     runs-on: macOS-latest
-    steps:
-    - uses: actions/checkout/@v4
-    - name: Install basicswap-bash
-      run: |
-        ./basicswap-install.sh --new --tor --internal --regtest
-    - name: Run bsx-update
-      run: |
-        bsx-update
-    - name: Run basicswap-bash
-      run: |
-        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
-
-  build-arch:
-    needs: formatting
-    name: 'Arch Linux'
-    runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
-    steps:
-    - uses: actions/checkout/@v4
-    - name: Install dependencies
-      run: |
-        pacman -Syu --noconfirm
-        pacman -S sudo git --noconfirm
-    - name: Install basicswap-bash
-      run: |
-        ./basicswap-install.sh --new --tor --internal --regtest
-    - name: Run bsx-update
-      run: |
-        source $HOME/.bashrc
-        bsx-update
-    - name: Run basicswap-bash
-      run: |
-        source $HOME/.bashrc
-        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
-
-  build-fedora:
-    needs: formatting
-    name: 'Fedora'
-    runs-on: ubuntu-latest
-    container:
-      image: fedora:latest
-    steps:
-    - uses: actions/checkout/@v4
-    - name: Install dependencies
-      run: |
-        dnf install git procps-ng -y
-    - name: Install basicswap-bash
-      run: |
-        ./basicswap-install.sh --new --tor --internal --regtest
-    - name: Run bsx-update
-      run: |
-        source $HOME/.bashrc
-        bsx-update
-    - name: Run basicswap-bash
-      run: |
-        source $HOME/.bashrc
-        timeout 30s basicswap-bash --regtest || [[ $? -eq 124 ]] && exit 0
-
-  build-ubuntu:
-    needs: formatting
-    name: Ubuntu
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout/@v4
     - name: Install basicswap-bash
