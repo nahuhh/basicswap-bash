@@ -35,7 +35,7 @@ jobs:
         npm install prettier prettier-plugin-sh --save-dev
     - name: Run Prettier
       run: |
-        npx prettier basicswap-* bsx-* bsx/*.sh "!(bsx-update)" -c -w || true
+        npx prettier basicswap-* bsx-* bsx/*.sh -c -w || true
         [[ $(git diff) ]] && git diff && exit 1 || exit 0
 
   build-linux-distros:
