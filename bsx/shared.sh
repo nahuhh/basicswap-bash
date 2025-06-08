@@ -36,6 +36,22 @@ coins=$(
 	EOF
 )
 
+# Coin map
+declare -A coin_map
+coin_map=(
+    [bitcoin]="BTC"
+    [bitcoincash]="BCH"
+    [dash]="DASH"
+    [decred]="DCR"
+    [dogecoin]="DOGE"
+    [firo]="FIRO"
+    [litecoin]="LTC"
+    [monero]="XMR"
+    [namecoin]="NMC"
+    [pivx]="PIVX"
+    [wownero]="WOW"
+)
+
 # Activate venv
 activate_venv() {
     source $SWAP_DATADIR/venv/bin/activate
