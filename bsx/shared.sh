@@ -10,6 +10,22 @@ export TOR_DNS_PORT=15353
 export BSX_LOCAL_TOR=true          # sets host to 127.0.0.1
 export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
 
+# Coin map
+declare -A coin_map
+coin_map=(
+    [bitcoin]="BTC"
+    [bitcoincash]="BCH"
+    [dash]="DASH"
+    [decred]="DCR"
+    [dogecoin]="DOGE"
+    [firo]="FIRO"
+    [litecoin]="LTC"
+    [monero]="XMR"
+    [namecoin]="NMC"
+    [pivx]="PIVX"
+    [wownero]="WOW"
+)
+
 # Network
 [[ "${1}${2}${3}${4}" == *"regtest"* ]] && export regtest="--regtest"
 
