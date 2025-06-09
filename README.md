@@ -5,7 +5,7 @@ BasicSwapDEX on Windows(WSL)/Debian/Ubuntu/Arch/Fedora
 
 ### Dependencies
 
-You will need::
+You will need:
 
 - curl
 - git
