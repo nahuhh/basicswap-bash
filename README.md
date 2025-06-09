@@ -20,7 +20,7 @@ Other dependencies vary by distribution and are handled by the installer.
 
 ```bash
 # Clone repo
-git clone https://github.com/nahuhh/basicswap-bash \
+git clone https://github.com/nahuhh/basicswap-bash -b dev \
 && cd basicswap-bash
 
 # Install BasicSwap
@@ -35,7 +35,7 @@ cd .. && rm -rf basicswap-bash
 ```bash
 # Clone repo
 cd ~/coinswaps/basicswap
-git clone https://github.com/nahuhh/basicswap-bash
+git clone https://github.com/nahuhh/basicswap-bash -b dev
 cd basicswap-bash
 
 # Install scripts
