@@ -71,7 +71,7 @@ elif [[ "$monerod_addr" ]]; then
         exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    red "\n\nIMPORTANT!! Make note of your seed above!!\n\n"
+    red "\n\nIMPORTANT!! Make note of your seed above!!\n"
     read -p "Press ENTER to continue. "
     enable_tor
 else
@@ -81,10 +81,10 @@ else
         exit 1
     }
     red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    red "\n\nIMPORTANT!! Make note of your seed above!!\n\n"
+    red "\n\nIMPORTANT!! Make note of your seed above!!\n"
     read -p "Press ENTER to continue. "
     enable_tor
 fi
 
-green "Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n\n"
-red "You may have to logout / login or open a new terminal window for the commands to be detected\n"
+green "Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n"
+red "You may have to logout / login or open a new terminal window for the commands to be detected"

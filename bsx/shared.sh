@@ -14,8 +14,8 @@ export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
 [[ "${1}${2}${3}${4}" == *"regtest"* ]] && export regtest="--regtest"
 
 # Colors
-red() { printf "\e[31;1m$*\e[0m"; }
-green() { printf "\e[32;1m$*\e[0m"; }
+red() { echo -e "\e[31;1m$*\e[0m"; }
+green() { echo -e "\e[32;1m$*\e[0m"; }
 
 # Coins
 coins=$(
@@ -64,7 +64,7 @@ is_running() {
         if [[ $bsx_pid ]]; then
             bsx_run=$(pgrep particld | grep $bsx_pid)
             if [[ $bsx_run ]]; then
-                red "\nError: BasicSwapDEX is running.\n"
+                red "\nError: BasicSwapDEX is running."
                 exit
             fi
         fi
@@ -72,9 +72,9 @@ is_running() {
 }
 
 is_encrypted() {
-    printf "BasicSwapDEX is currently:\n[1] Encrypted\n[2] Unencrypted\n\n"
-    red "Note: This is a password that you setup via the GUI.\n"
-    red "Note: This is NOT the clientauth password\n\n"
+    echo -e "BasicSwapDEX is currently:\n[1] Encrypted\n[2] Unencrypted\n"
+    red "Note: This is a password that you setup via the GUI."
+    red "Note: This is NOT the clientauth password\n"
     until [[ "$l" =~ ^[12]$ ]]; do
         read -p 'Select an option [1|2]: ' l
         case $l in
@@ -85,15 +85,15 @@ is_encrypted() {
                     if [[ $pass1 = $pass2 ]]; then
                         export WALLET_ENCRYPTION_PWD=$pass1
                     else
-                        red "\nThe passwords entered don't match. Try again\n\n"
+                        red "\nThe passwords entered don't match. Try again\n"
                     fi
                 done
                 ;;
             2)
-                printf "\nProceeding without a password\n"
+                echo -e "\nProceeding without a password"
                 ;;
             *)
-                red "You must answer 1 or 2\n"
+                red "You must answer 1 or 2"
                 ;;
         esac
     done
@@ -112,13 +112,13 @@ start_tor() {
             tor -f $SWAP_DATADIR/tor/torrc &> /dev/null &
             echo $! > $pid_file
             if [[ $(check_tor) ]]; then
-                green "Started Tor $(pid)\n"
+                green "Started Tor $(pid)"
             else
-                red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)\n"
+                red "Failed to start tor\nCheck for a conflict on these PIDs\n$(pgrep tor)"
                 exit 1
             fi
         else
-            green "Tor running $(pid)\n"
+            green "Tor running $(pid)"
         fi
     else
         echo "Tor disabled"
@@ -136,10 +136,10 @@ stop_tor() {
         while [[ $(check_tor) ]]; do
             ((tries++))
             if [[ $tries -gt 5 ]]; then
-                red "Failed to stop tor $(pid)\n"
+                red "Failed to stop tor $(pid)"
                 exit 0
             fi
-            red "Stopping tor $(pid)\n"
+            red "Stopping tor $(pid)"
             sleep 1
             if [[ ! $(check_tor) ]]; then
                 echo "Tor stopped successfully $(pid)"
@@ -164,10 +164,10 @@ detect_os_arch() {
         # MacOS
         MACOS=1
         if type -p brew > /dev/null; then
-            green "Homebrew is installed\n"
+            green "Homebrew is installed"
             INSTALL="brew install --quiet"
         else
-            green "Installing Homebrew\n"
+            green "Installing Homebrew"
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
         DEPENDENCY="python gnupg pkg-config coreutils"
@@ -202,7 +202,7 @@ detect_os_arch() {
             PIPX_UV="pipx install uv"
         fi
     else
-        red "\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed.\n"
+        red "\nFailed to detect OS. Unsupported or unknown distribution.\nInstall Failed."
         exit
     fi
 }

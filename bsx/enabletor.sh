@@ -9,7 +9,7 @@ detect_os_arch
 
 # Check for Tor installation
 if type -p tor > /dev/null; then
-    printf "\nTor is already installed :)\n"
+    echo -e "\nTor is already installed :)"
 else
     # Install and configure tor
     echo "Installing Tor..."

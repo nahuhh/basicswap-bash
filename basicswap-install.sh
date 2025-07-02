@@ -6,20 +6,20 @@ source $PWD/bsx/shared.sh
 chain=(particl monero wownero dash decred firo litecoin bitcoin bitcoincash pivx)
 for coin in "${chain[@]}"; do
     if [[ -f "${SWAP_DATADIR}/${coin}/${coin}.conf" ]]; then
-        printf "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}.conf\n"
+        echo -e "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}.conf"
         abort=1
     fi
     if [[ -f "${SWAP_DATADIR}/${coin}/${coin}d.conf" ]]; then
-        printf "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}d.conf\n"
+        echo -e "Existing configuration file found at ${SWAP_DATADIR}/${coin}/${coin}d.conf"
         abort=1
     fi
 done
 if [[ -f "${SWAP_DATADIR}/basicswap.json" ]]; then
-    printf "Existing configuration file(s) found at ${SWAP_DATADIR}/basicswap.json.\n"
+    echo -e "Existing configuration file(s) found at ${SWAP_DATADIR}/basicswap.json."
     abort=1
 fi
 if [[ $abort ]]; then
-    red "Aborting install\n"
+    red "Aborting install"
     exit
 fi
 
@@ -45,14 +45,14 @@ is_tails
 detect_os_arch
 
 ## Update & Install dependencies
-printf "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding\n\n"
-green "$UPDATE\n$INSTALL curl automake libtool jq ${DEPENDENCY}\n"
+echo -e "\n\nInstalling dependencies\nPress CTRL-C at password prompt(s) to skip. If skipped, you must install the dependencies manually before proceeding\n"
+green "$UPDATE\n$INSTALL curl automake libtool jq ${DEPENDENCY}"
 
-$UPDATE && $INSTALL curl automake libtool jq $DEPENDENCY || printf "Skipping dependency installation\n"
+$UPDATE && $INSTALL curl automake libtool jq $DEPENDENCY || echo -e "Skipping dependency installation"
 ${PIPX_UV:-}
 
 # Enable tor
-printf "\n[1] Tor ON (requires sudo)\n[2] Tor OFF\n"
+echo -e "\n[1] Tor ON (requires sudo)\n[2] Tor OFF"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
     if [[ "$1 $2 $3" == *"tor"* ]]; then
         tor_on=1
@@ -61,19 +61,19 @@ until [[ "$tor_on" =~ ^[12]$ ]]; do
     fi
     case $tor_on in
         1)
-            green "BasicSwapDEX will use Tor\n"
+            green "BasicSwapDEX will use Tor"
             ;;
         2)
-            red "BasicSwapDEX will NOT use Tor\n"
+            red "BasicSwapDEX will NOT use Tor"
             ;;
         *)
-            red "You must answer 1 or 2\n"
+            red "You must answer 1 or 2"
             ;;
     esac
 done
 
 ## Particl restore Seed
-printf "\n[1] New Install\n[2] Restore from Particl Seed\n"
+echo -e "\n[1] New Install\n[2] Restore from Particl Seed"
 until [[ "$restore" =~ ^[12]$ ]]; do
     if [[ "$1 $2 $3" == *"new"* ]]; then
         restore=1
@@ -82,22 +82,22 @@ until [[ "$restore" =~ ^[12]$ ]]; do
     fi
     case $restore in
         1)
-            green "Installing BasicSwapDEX\n"
+            green "Installing BasicSwapDEX"
             ;;
         2)
             until [[ "$wordcount" = "24" ]]; do
                 read -p $'\nEnter your Particl Seed\n[example: word word word word word...] ' particl_mnemonic
                 wordcount=$(echo $particl_mnemonic | wc -w)
                 if [[ $wordcount = 24 ]]; then
-                    printf "Restoring BasicSwapDEX\n"
-                    green "$particl_mnemonic\n"
+                    echo -e "Restoring BasicSwapDEX"
+                    green "$particl_mnemonic"
                 else
-                    red "Try again. Seed must be 24 words\n"
+                    red "Try again. Seed must be 24 words"
                 fi
             done
             ;;
         *)
-            red "You must answer 1 or 2\n"
+            red "You must answer 1 or 2"
             ;;
     esac
 done
@@ -107,15 +107,15 @@ if [[ $particl_mnemonic ]]; then
     read -p $'\nEnter a restore height for your BasicSwap XMR wallet? [Y/n] ' height
     case $height in
         n | N)
-            red "Not using a custom XMR Restore height\n"
+            red "Not using a custom XMR Restore height"
             ;;
         *)
             until [[ "$xmrrestoreheight" =~ ^[0-9]{1,7}$ ]]; do
                 read -p $'Enter your Monero Restore Height [example: 2548568] ' xmrrestoreheight
                 if [[ $xmrrestoreheight =~ ^[0-9]{7}$ ]]; then
-                    green "Your XMR Restore height: $xmrrestoreheight\n"
+                    green "Your XMR Restore height: $xmrrestoreheight"
                 else
-                    red "Try again. Must be 1-7 digits\n"
+                    red "Try again. Must be 1-7 digits"
                 fi
             done
             ;;
@@ -123,7 +123,7 @@ if [[ $particl_mnemonic ]]; then
 fi
 
 ## Configure Monero
-printf "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)\n"
+echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)"
 until [[ "$node" =~ ^[12]$ ]]; do
     if [[ "$1 $2 $3" == *"internal"* ]]; then
         node=2
@@ -137,39 +137,39 @@ until [[ "$node" =~ ^[12]$ ]]; do
                 read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
                 checknode=$(timeout 15s curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
                 if [[ $checknode ]]; then
-                    green "Successfully connected to the XMR node @ $monerod_addr:$monerod_port\n"
+                    green "Successfully connected to the XMR node @ $monerod_addr:$monerod_port"
                 else
-                    red "The node at $monerod_addr:$monerod_port is not accessible. Try again\n"
+                    red "The node at $monerod_addr:$monerod_port is not accessible. Try again"
                 fi
 
             done
             if [[ -z $xmrrestoreheight ]]; then
                 xmrrestoreheight="${checknode}"
             fi
-            green "Monero wallet Restore Height set to ${xmrrestoreheight}\n"
+            green "Monero wallet Restore Height set to ${xmrrestoreheight}"
             ;;
         2)
             tries=0
             until [[ $xmrrestoreheight ]]; do
                 if [[ $tries -eq 3 ]]; then
-                    echo "Failed to get Monero blockchain height. Please run the installer again.\n"
+                    echo "Failed to get Monero blockchain height. Please run the installer again."
                     exit 1
                 fi
                 ((tries++))
-                green "Attempt ${tries}/3 to set restore height\n"
+                green "Attempt ${tries}/3 to set restore height"
                 xmrrestoreheight=$(timeout 15s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
             done
-            green "BasicSwapDEX will run the Monero node for you.\n"
-            green "Monero wallet Restore Height set to ${xmrrestoreheight}\n"
+            green "BasicSwapDEX will run the Monero node for you."
+            green "Monero wallet Restore Height set to ${xmrrestoreheight}"
             ;;
         *)
-            red "You must answer 1 or 2\n"
+            red "You must answer 1 or 2"
             ;;
     esac
 done
 
 ## Begin Install
-printf "\nInstalling BasicSwapDEX\n"
+echo -e "\nInstalling BasicSwapDEX"
 read -p 'Press Enter to continue, or CTRL-C to exit.'
 
 # Quest to make trasher happy

@@ -3,7 +3,7 @@ source $HOME/.local/bin/bsx/shared.sh
 
 ## Prompt for user input
 if [[ -z $addcoin ]]; then
-    printf "\n\nThe following coins can be added (case sensitive)\n${coins}\n\n"
+    echo -e "\n\nThe following coins can be added (case sensitive)\n${coins}\n"
     read -p 'Full name of coin to add [example: litecoin] ' addcoin
 fi
 
@@ -34,14 +34,14 @@ if [[ ! "${local_only[@]}" =~ "${addcoin}" ]]; then
                 export "${wallet_env}"="${wallet_name}"
             fi
 
-            red "\nNote: YMMV! Only proceed if you know what you are doing, and if your node has been configured to accept connections!\n"
-            red "\nNote: This MAY not work for all coins.\n"
-            red "\nWarning: Wallet files may be stored in the datadir of the external node.\n"
+            red "\nNote: YMMV! Only proceed if you know what you are doing, and if your node has been configured to accept connections!"
+            red "\nNote: This MAY not work for all coins."
+            red "\nWarning: Wallet files may be stored in the datadir of the external node."
             read -p $'\nProceed to add '"${ticker}"$' to your BasicSwap install? Press ENTER to continue. CTRL-C to exit\n'
             until [[ $confirm_node =~ ^[yY]$ ]]; do
                 read -p "Enter your node's IP address: " node_ip
                 read -p "Enter your node's RPC port: " node_port
-                green "Is this the correct RPC address and port: ${node_ip}:${node_port}? [y/N]:\n"
+                green "Is this the correct RPC address and port: ${node_ip}:${node_port}? [y/N]:"
                 read -p "" confirm_node
             done
             rpc_host="${ticker}_RPC_HOST"
@@ -61,7 +61,7 @@ if [[ ! "${local_only[@]}" =~ "${addcoin}" ]]; then
                     echo
                     read -sp "Re-enter the RPC password of ${ticker} daemon: " node_pass2
                     if [[ "${node_pass}" != "${node_pass2}" ]]; then
-                        red "Passwords dont match. Try again\n"
+                        red "Passwords dont match. Try again"
                     fi
                 done
                 rpc_user="${ticker}_RPC_USER"
