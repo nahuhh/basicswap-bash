@@ -7,11 +7,6 @@ if [[ -z $addcoin ]]; then
     read -p 'Full name of coin to add [example: litecoin] ' addcoin
 fi
 
-## Set wallet name
-ticker="${coin_map[$addcoin]}"
-wallet_env="${ticker}_WALLET_NAME"
-wallet_name="BSX_${ticker}"
-
 # TODO need to test descriptor wallet, mweb, and coins that need reseeding. excluding for now
 # bitcoincash doesnt like multiwallet
 local_only=(namecoin litecoin pivx bitcoincash)
@@ -24,7 +19,13 @@ manage_daemon_false() {
 }
 
 ## Remote node
-if [[ ! "${local_only[@]}" =~ "${addcoin}" ]]; then
+detect_os_arch
+if [[ ! "${local_only[@]}" =~ "${addcoin}" ]] || [[ -z "${MACOS}" ]]; then
+    # Set wallet name
+    ticker="${coin_map[$addcoin]}"
+    wallet_env="${ticker}_WALLET_NAME"
+    wallet_name="BSX_${ticker}"
+
     read -p "Connecting to an external ${ticker} node (core node, NOT electrum)? [y/N]: " remote_node
     if [[ "${remote_node}" =~ ^[yY]$ ]]; then
         existing_config=$(jq .chainclients."${addcoin}" $SWAP_DATADIR/basicswap.json)

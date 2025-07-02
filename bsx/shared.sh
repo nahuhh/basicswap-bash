@@ -37,20 +37,22 @@ coins=$(
 )
 
 # Coin map
-declare -A coin_map
-coin_map=(
-    [bitcoin]="BTC"
-    [bitcoincash]="BCH"
-    [dash]="DASH"
-    [decred]="DCR"
-    [dogecoin]="DOGE"
-    [firo]="FIRO"
-    [litecoin]="LTC"
-    [monero]="XMR"
-    [namecoin]="NMC"
-    [pivx]="PIVX"
-    [wownero]="WOW"
-)
+if [[ -z "${MACOS}" ]]; then
+    declare -A coin_map
+    coin_map=(
+        [bitcoin]="BTC"
+        [bitcoincash]="BCH"
+        [dash]="DASH"
+        [decred]="DCR"
+        [dogecoin]="DOGE"
+        [firo]="FIRO"
+        [litecoin]="LTC"
+        [monero]="XMR"
+        [namecoin]="NMC"
+        [pivx]="PIVX"
+        [wownero]="WOW"
+    )
+fi
 
 # Activate venv
 activate_venv() {
