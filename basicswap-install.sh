@@ -123,7 +123,7 @@ if [[ $particl_mnemonic ]]; then
 fi
 
 ## Configure Monero
-echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+70GB)"
+echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+90GB)"
 until [[ "$node" =~ ^[12]$ ]]; do
     if [[ "$1 $2 $3" == *"internal"* ]]; then
         node=2
