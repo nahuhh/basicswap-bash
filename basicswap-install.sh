@@ -157,7 +157,7 @@ until [[ "$node" =~ ^[12]$ ]]; do
                 fi
                 ((tries++))
                 green "Attempt ${tries}/3 to set restore height"
-                xmrrestoreheight=$(timeout 15s curl -s http://node3.monerodevs.org:18089/get_info | jq .height)
+                xmrrestoreheight=$(timeout 15s curl -s http://node2.monerodevs.org:18089/get_info | jq .height)
             done
             green "BasicSwapDEX will run the Monero node for you."
             green "Monero wallet Restore Height set to ${xmrrestoreheight}"
