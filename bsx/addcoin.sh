@@ -7,9 +7,11 @@ if [[ -z $addcoin ]]; then
     read -p 'Full name of coin to add [example: litecoin] ' addcoin
 fi
 
-# TODO need to test descriptor wallet, mweb, and coins that need reseeding. excluding for now
+# TODO need to test descriptor wallet, and coins that need reseeding. excluding for now
 # bitcoincash doesnt like multiwallet
-local_only=(namecoin litecoin pivx bitcoincash)
+# firo doesnt like custom wallet names
+# ltc-mweb's different wallet file has issues
+local_only=(namecoin litecoin pivx bitcoincash firo)
 # coins with separate wallet daemons
 wallet_daemon_coins=(monero wownero decred)
 
@@ -20,7 +22,7 @@ manage_daemon_false() {
 
 ## Remote node
 detect_os_arch
-if [[ ! "${local_only[@]}" =~ "${addcoin}" ]] || [[ -z "${MACOS}" ]]; then
+if [[ -z "${MACOS}" ]] && ! [[ "${local_only[@]}" =~ "${addcoin}" ]]; then
     # Set wallet name
     ticker="${coin_map[$addcoin]}"
     wallet_env="${ticker}_WALLET_NAME"
