@@ -54,6 +54,24 @@ if [[ -z "${MACOS}" ]]; then
     )
 fi
 
+# Coin map (Bash 3.2 compatible for MacOS)
+get_coin_ticker() {
+    case "$1" in
+        bitcoin) echo "BTC" ;;
+        bitcoincash) echo "BCH" ;;
+        dash) echo "DASH" ;;
+        decred) echo "DCR" ;;
+        dogecoin) echo "DOGE" ;;
+        firo) echo "FIRO" ;;
+        litecoin) echo "LTC" ;;
+        monero) echo "XMR" ;;
+        namecoin) echo "NMC" ;;
+        pivx) echo "PIVX" ;;
+        wownero) echo "WOW" ;;
+        *) red "Invalid coin \"$1\"" && exit 1 ;;
+    esac
+}
+
 # Activate venv
 activate_venv() {
     source $SWAP_DATADIR/venv/bin/activate
@@ -172,7 +190,7 @@ detect_os_arch() {
             green "Installing Homebrew"
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
-        DEPENDENCY="python gnupg pkg-config coreutils"
+        DEPENDENCY="python gnupg pkg-config coreutils zeromq"
         green "\n\nDetected MacOS"
     elif type -p dnf > /dev/null; then
         # Fedora
