@@ -22,9 +22,13 @@ manage_daemon_false() {
 
 ## Remote node
 detect_os_arch
-if [[ -z "${MACOS}" ]] && ! [[ "${local_only[@]}" =~ "${addcoin}" ]]; then
+if ! [[ "${local_only[@]}" =~ "${addcoin}" ]]; then
     # Set wallet name
-    ticker="${coin_map[$addcoin]}"
+    if [[ "${MACOS}" ]]; then
+        ticker="$(get_coin_ticker "${addcoin}")"
+    else
+        ticker="${coin_map[$addcoin]}"
+    fi
     wallet_env="${ticker}_WALLET_NAME"
     wallet_name="BSX_${ticker}"
 
