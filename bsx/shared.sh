@@ -172,7 +172,7 @@ detect_os_arch() {
             green "Installing Homebrew"
             INSTALL="curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /bin/bash && brew install"
         fi
-        DEPENDENCY="python gnupg pkg-config coreutils"
+        DEPENDENCY="python gnupg pkg-config coreutils zeromq"
         green "\n\nDetected MacOS"
     elif type -p dnf > /dev/null; then
         # Fedora
