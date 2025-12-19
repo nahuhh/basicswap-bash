@@ -23,7 +23,7 @@ manage_daemon_false() {
 ## Remote node
 detect_os_arch
 for coin in "${local_only[@]}"; do
-    if ! [[ "${coin}" = "${addcoin}" ]]; then
+    if [[ "${coin}" = "${addcoin}" ]]; then
         skip=1
         break
     fi
