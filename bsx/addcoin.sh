@@ -22,7 +22,14 @@ manage_daemon_false() {
 
 ## Remote node
 detect_os_arch
-if ! [[ "${local_only[@]}" =~ "${addcoin}" ]]; then
+for coin in "${local_only[@]}"; do
+    if ! [[ "${coin}" = "${addcoin}" ]]; then
+        skip=1
+        break
+    fi
+done
+
+if ! [[ "${skip}" ]]; then
     # Set wallet name
     if [[ "${MACOS}" ]]; then
         ticker="$(get_coin_ticker "${addcoin}")"
