@@ -54,7 +54,7 @@ ${PIPX_UV:-}
 # Enable tor
 echo -e "\n[1] Tor ON (requires sudo)\n[2] Tor OFF"
 until [[ "$tor_on" =~ ^[12]$ ]]; do
-    if [[ "$1 $2 $3" == *"tor"* ]]; then
+    if [[ "$1 $2 $3 $4" == *"tor"* ]]; then
         tor_on=1
     else
         read -p 'Select an option: [1|2]: ' tor_on
@@ -75,7 +75,7 @@ done
 ## Particl restore Seed
 echo -e "\n[1] New Install\n[2] Restore from Particl Seed"
 until [[ "$restore" =~ ^[12]$ ]]; do
-    if [[ "$1 $2 $3" == *"new"* ]]; then
+    if [[ "$1 $2 $3 $4" == *"new"* ]]; then
         restore=1
     else
         read -p 'Select an option: [1|2]: ' restore
@@ -112,7 +112,7 @@ if [[ $particl_mnemonic ]]; then
         *)
             until [[ "$xmrrestoreheight" =~ ^[0-9]{1,7}$ ]]; do
                 read -p $'Enter your Monero Restore Height [example: 2548568] ' xmrrestoreheight
-                if [[ $xmrrestoreheight =~ ^[0-9]{7}$ ]]; then
+                if [[ $xmrrestoreheight =~ ^[0-9]{1,7}$ ]]; then
                     green "Your XMR Restore height: $xmrrestoreheight"
                 else
                     red "Try again. Must be 1-7 digits"
@@ -122,10 +122,43 @@ if [[ $particl_mnemonic ]]; then
     esac
 fi
 
+# Electrum BTC & LTC
+echo -e "\nAdd Electrum (light) wallets for the following coins:"
+echo -e "\n[1] BTC \n[2] LTC (no MWEB support)\n[3] Both\n[4] Skip"
+until [[ "$electrum" =~ ^[1-4]$ ]]; do
+    if [[ "$1 $2 $3 $4" == *"electrum"* ]]; then
+        electrum=3
+    elif [[ "$1 $2 $3 $4" == *"fullnode"* ]]; then
+        electrum=4
+    else
+        read -p 'Select an option [1-4]: ' electrum
+    fi
+    case $electrum in
+        1)
+            use_electrum="--btc-mode=electrum --withcoins=bitcoin"
+            green "Using Electrum for BTC"
+            ;;
+        2)
+            use_electrum="--ltc-mode=electrum --withcoins=litecoin"
+            green "Using Electrum for LTC"
+            ;;
+        3)
+            use_electrum="--light --withcoins=bitcoin,litecoin"
+            green "Using Electrum for BTC and LTC wallets"
+            ;;
+        4)
+            echo "Not setting up BTC and LTC"
+            ;;
+        *)
+            red "You must answer 1-4"
+            ;;
+    esac
+done
+
 ## Configure Monero
 echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+90GB)"
 until [[ "$node" =~ ^[12]$ ]]; do
-    if [[ "$1 $2 $3" == *"internal"* ]]; then
+    if [[ "$1 $2 $3 $4" == *"internal"* ]]; then
         node=2
     else
         read -p 'Select an option [1|2]: ' node
@@ -204,6 +237,7 @@ fi
 cp -r basicswap-bash bsx* $HOME/.local/bin/.
 
 ## Make venv and set variables for install
+export use_electrum="${use_electrum}"
 export monerod_addr="${monerod_addr}"
 export monerod_port="${monerod_port}"
 export particl_mnemonic="${particl_mnemonic}"
