@@ -46,7 +46,7 @@ if [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
     # Restore seed
     PARTICL_MNEMONIC=$particl_mnemonic
     XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
+        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" ${use_electrum:-} || {
         red "Installation failed. Try again"
         exit 1
     }
@@ -56,7 +56,7 @@ if [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
 elif [[ "$particl_mnemonic" ]]; then
     # Restore seed
     PARTICL_MNEMONIC=$particl_mnemonic
-    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
+    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" ${use_electrum:-} || {
         red "Installation failed. Try again"
         exit 1
     }
@@ -66,7 +66,7 @@ elif [[ "$particl_mnemonic" ]]; then
 elif [[ "$monerod_addr" ]]; then
     # Setup new install and use a remote monero node
     XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || {
+        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${use_electrum:-} || {
         red "Installation failed. Try again"
         exit 1
     }
