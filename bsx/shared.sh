@@ -102,6 +102,7 @@ is_encrypted() {
                 until [[ $pass1 ]] && [[ $pass1 = $pass2 ]]; do
                     read -sp 'Enter your existing BasicSwap encryption password: ' pass1
                     read -sp $'\nRe-enter your BasicSwap encryption password: ' pass2
+                    echo
                     if [[ $pass1 = $pass2 ]]; then
                         export WALLET_ENCRYPTION_PWD=$pass1
                     else
