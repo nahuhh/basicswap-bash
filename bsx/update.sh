@@ -20,6 +20,12 @@ fi
 
 #git checkout master
 git pull
+
+# electrum
+git switch electrum || git checkout -b electrum origin/dev
+git fetch origin pull/422/head:litewallets
+git merge -m "422 - litewallets" litewallets
+
 $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
 $SWAP_DATADIR/venv/bin/pip3 install .
 

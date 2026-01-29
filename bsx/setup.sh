@@ -10,12 +10,17 @@ if [[ -d basicswap ]]; then
         exit 1
     }
 else
-    git clone https://github.com/basicswap/basicswap || {
+    git clone https://github.com/basicswap/basicswap -b dev || {
         red "Failed to clone repo. Please run the installer again"
         exit 1
     }
     cd $SWAP_DATADIR/basicswap
 fi
+
+# fetch litewallet branch
+git switch electrum || git checkout -b electrum origin/dev
+git fetch origin pull/422/head:litewallets
+git merge -m "422 - litewallets" litewallets
 
 ## Install basicswap, coincurve, and pip dependencies
 # Macos
