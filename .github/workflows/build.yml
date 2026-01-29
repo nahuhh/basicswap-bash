@@ -70,7 +70,7 @@ jobs:
         run: ${{ matrix.install }}
       - name: Install basicswap-bash
         run: |
-          ./basicswap-install.sh --new --tor --internal --regtest
+          ./basicswap-install.sh --new --tor --fullnode --internal --regtest
       - name: Run bsx-update
         run: |
           if [ -n "${{ matrix.set-path }}" ]; then
@@ -92,7 +92,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install basicswap-bash
       run: |
-        ./basicswap-install.sh --new --tor --internal --regtest
+        ./basicswap-install.sh --new --tor --fullnode --internal --regtest
     - name: Run bsx-update
       run: |
         bsx-update
