@@ -9,6 +9,8 @@ export TOR_CONTROL_PORT=19051
 export TOR_DNS_PORT=15353
 export BSX_LOCAL_TOR=true          # sets host to 127.0.0.1
 export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
+export UI_WS_PORT=11700
+export UI_HTML_PORT=12700
 
 # Network
 [[ "${1}${2}${3}${4}${5}" == *"regtest"* ]] && export regtest="--regtest"
