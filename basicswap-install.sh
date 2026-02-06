@@ -112,7 +112,7 @@ if [[ $particl_mnemonic ]]; then
         *)
             until [[ "$xmrrestoreheight" =~ ^[0-9]{1,7}$ ]]; do
                 read -p $'Enter your Monero Restore Height [example: 2548568] ' xmrrestoreheight
-                if [[ $xmrrestoreheight =~ ^[0-9]{7}$ ]]; then
+                if [[ $xmrrestoreheight =~ ^[0-9]{1,7}$ ]]; then
                     green "Your XMR Restore height: $xmrrestoreheight"
                 else
                     red "Try again. Must be 1-7 digits"
@@ -123,22 +123,34 @@ if [[ $particl_mnemonic ]]; then
 fi
 
 # Electrum BTC & LTC
-echo -e "\n[1] Add BTC & LTC Light Wallets\n[2] Setup later"
-until [[ "$electrum" =~ ^[12]$ ]]; do
+echo -e "\nAdd Electrum (light) wallets for the following coins:"
+echo -e "\n[1] BTC \n[2] LTC (no MWEB support)\n[3] Both\n[4] Skip"
+until [[ "$electrum" =~ ^[1-4]$ ]]; do
     if [[ "$1 $2 $3 $4" == *"electrum"* ]]; then
-        electrum=1
+        electrum=3
     elif [[ "$1 $2 $3 $4" == *"fullnode"* ]]; then
-        electrum=2
+        electrum=4
     else
-        read -p 'Select an option [1|2]: ' electrum
+        read -p 'Select an option [1-4]: ' electrum
     fi
     case $electrum in
         1)
-            use_electrum="--light --withcoins=bitcoin,litecoin"
-            green "Using electrum for BTC and LTC wallets"
+            use_electrum="--btc-mode=electrum --withcoins=bitcoin"
+            green "Using Electrum for BTC"
             ;;
         2)
+            use_electrum="--ltc-mode=electrum --withcoins=litecoin"
+            green "Using Electrum for LTC"
+            ;;
+        3)
+            use_electrum="--light --withcoins=bitcoin,litecoin"
+            green "Using Electrum for BTC and LTC wallets"
+            ;;
+        4)
             echo "Not setting up BTC and LTC"
+            ;;
+        *)
+            red "You must answer 1-4"
             ;;
     esac
 done
