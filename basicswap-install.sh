@@ -135,11 +135,24 @@ until [[ "$node" =~ ^[12]$ ]]; do
             until [[ $checknode ]]; do
                 read -p 'Enter Address of Monero node [example: 192.168.1.123] ' monerod_addr
                 read -p 'Enter RPC Port for the Monero node [example: 18081] ' monerod_port
-                checknode=$(timeout 15s curl -sk http://$monerod_addr:$monerod_port/get_info | jq .height)
+                read -p $'\nDoes this Monero node require authentication? [y/N] ' xmr_pass
+
+                if [[ "${xmr_pass}" =~ ^[yY]$ ]]; then
+                    until [[ "${monerod_pass}" ]] && [[ "${monerod_pass}" = "${monerod_pass2}" ]]; do
+                        read -p "Enter the RPC username of the Monero node: " monerod_user
+                        read -sp $'Enter the RPC password of the Monero node: ' monerod_pass
+                        read -sp $'\nRe-enter the RPC password of the Monero node: ' monerod_pass2
+                        if [[ "${monerod_pass}" != "${monerod_pass2}" ]]; then
+                            red "\nPasswords dont match. Try again"
+                        fi
+                    done
+                fi
+
+                checknode=$(timeout 15s curl -sk ${monerod_user:+"-u $monerod_user:$monerod_pass --digest"} http://$monerod_addr:$monerod_port/get_info | jq .height)
                 if [[ $checknode ]]; then
-                    green "Successfully connected to the XMR node @ $monerod_addr:$monerod_port"
+                    green "\nSuccessfully connected to the XMR node @ $monerod_addr:$monerod_port"
                 else
-                    red "The node at $monerod_addr:$monerod_port is not accessible. Try again"
+                    red "\nThe node at $monerod_addr:$monerod_port is not accessible. Try again"
                 fi
 
             done
@@ -206,6 +219,8 @@ cp -r basicswap-bash bsx* $HOME/.local/bin/.
 ## Make venv and set variables for install
 export monerod_addr="${monerod_addr}"
 export monerod_port="${monerod_port}"
+export monerod_user="${monerod_user}"
+export monerod_pass="${monerod_pass}"
 export particl_mnemonic="${particl_mnemonic}"
 export xmrrestoreheight="${xmrrestoreheight}"
 export tor_on="${tor_on}"
