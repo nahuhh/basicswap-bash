@@ -41,50 +41,17 @@ enable_tor() {
     fi
 }
 
-# Use the custom Monero node & add wownero because its a small chain
-if [[ "$particl_mnemonic" && "$monerod_addr" ]]; then
-    # Restore seed
-    PARTICL_MNEMONIC=$particl_mnemonic
-    XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
-        red "Installation failed. Try again"
-        exit 1
-    }
-    red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    read -p "Press ENTER to continue. "
-    enable_tor
-elif [[ "$particl_mnemonic" ]]; then
-    # Restore seed
-    PARTICL_MNEMONIC=$particl_mnemonic
-    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 --particl_mnemonic="$PARTICL_MNEMONIC" || {
-        red "Installation failed. Try again"
-        exit 1
-    }
-    red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    read -p "Press ENTER to continue. "
-    enable_tor
-elif [[ "$monerod_addr" ]]; then
-    # Setup new install and use a remote monero node
-    XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port \
-        basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 || {
-        red "Installation failed. Try again"
-        exit 1
-    }
-    red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    red "\n\nIMPORTANT!! Make note of your seed above!!\n"
-    read -p "Press ENTER to continue. "
-    enable_tor
-else
-    # Setup new install using local nodes
-    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${regtest:-} || {
-        red "Installation failed. Try again"
-        exit 1
-    }
-    red "\n\nMonero wallet restore height is ${xmrrestoreheight}"
-    red "\n\nIMPORTANT!! Make note of your seed above!!\n"
-    read -p "Press ENTER to continue. "
-    enable_tor
-fi
+# Install bsx
+[[ $monerod_addr ]] && export XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port
+[[ $monerod_user ]] && export XMR_RPC_USER=$monerod_user XMR_RPC_PWD=$monerod_pass
+basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${particl_mnemonic:+"--particl_mnemonic=\"$particl_mnemonic\""} ${regtest:-} || {
+    red "Installation failed. Try again"
+    exit 1
+}
+red "\nMonero wallet restore height is ${xmrrestoreheight}"
+[[ -z $particl_mnemonic ]] && red "\nIMPORTANT!! Make note of your seed (wallet recovery phrase) above!!\n\n"
+read -p "Press ENTER to continue. "
+enable_tor
 
 green "Install complete.\n\nUse 'basicswap-bash' to run, 'bsx-update' to update, and 'bsx-addcoin' to add a coin\n"
 red "You may have to logout / login or open a new terminal window for the commands to be detected"
