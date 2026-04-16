@@ -44,7 +44,7 @@ enable_tor() {
 # Install bsx
 [[ $monerod_addr ]] && export XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port
 [[ $monerod_user ]] && export XMR_RPC_USER=$monerod_user XMR_RPC_PWD=$monerod_pass
-basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${particl_mnemonic:+"--particl_mnemonic=\"$particl_mnemonic\""} ${regtest:-} || {
+basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero,wownero --xmrrestoreheight=$xmrrestoreheight --wowrestoreheight=600000 ${particl_mnemonic:+"--particl_mnemonic=\"$particl_mnemonic\""} ${use_electrum:-} ${regtest:-} || {
     red "Installation failed. Try again"
     exit 1
 }
