@@ -11,7 +11,7 @@ export BSX_LOCAL_TOR=true          # sets host to 127.0.0.1
 export BSX_ALLOW_ENV_OVERRIDE=true # required to change the ports
 
 # Network
-[[ "${1}${2}${3}${4}" == *"regtest"* ]] && export regtest="--regtest"
+[[ "${1}${2}${3}${4}${5}" == *"regtest"* ]] && export regtest="--regtest"
 
 # Colors
 red() { echo -e "\e[31;1m$*\e[0m"; }
@@ -102,6 +102,7 @@ is_encrypted() {
                 until [[ $pass1 ]] && [[ $pass1 = $pass2 ]]; do
                     read -sp 'Enter your existing BasicSwap encryption password: ' pass1
                     read -sp $'\nRe-enter your BasicSwap encryption password: ' pass2
+                    echo
                     if [[ $pass1 = $pass2 ]]; then
                         export WALLET_ENCRYPTION_PWD=$pass1
                     else
