@@ -18,8 +18,8 @@ if [[ -f basicswap/messages_pb2.py ]]; then
     git restore basicswap/messages_pb2.py
 fi
 
-#git checkout master
-git checkout dev
+git checkout master
+#git checkout dev
 git pull
 
 $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes
