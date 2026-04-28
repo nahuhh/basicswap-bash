@@ -229,7 +229,7 @@ export MACOS="${MACOS}"
 
 ## Create venv
 if [[ $(type -p uv) ]]; then
-    uv venv -p 3.10 "${SWAP_DATADIR}/venv" --seed
+    uv venv -p 3.12 "${SWAP_DATADIR}/venv" --seed
 else
     python3 -m venv "${SWAP_DATADIR}/venv"
 fi
