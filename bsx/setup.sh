@@ -42,12 +42,21 @@ enable_tor() {
 }
 
 # Install bsx
+tries=1
 [[ $monerod_addr ]] && export XMR_RPC_HOST=$monerod_addr XMR_RPC_PORT=$monerod_port
 [[ $monerod_user ]] && export XMR_RPC_USER=$monerod_user XMR_RPC_PWD=$monerod_pass
-basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$xmrrestoreheight ${particl_mnemonic:+"--particl_mnemonic=\"$particl_mnemonic\""} ${use_electrum:-} ${add_wow:-} ${regtest:-} || {
-    red "Installation failed. Try again"
-    exit 1
-}
+while [[ 1 ]]; do
+    basicswap-prepare --datadir=$SWAP_DATADIR --withcoins=monero --xmrrestoreheight=$xmrrestoreheight ${particl_mnemonic:+"--particl_mnemonic=\"$particl_mnemonic\""} ${use_electrum:-} ${add_wow:-} ${regtest:-} && break || {
+        if [[ $tries -lt 3 ]]; then
+            red "Attempt ${tries}/3 - Installation failed. Retrying in 2 seconds.."
+            sleep 2
+            ((tries++))
+        else
+            red "Attempt ${tries}/3 - Installation failed."
+            exit 1
+        fi
+    }
+done
 red "\nMonero wallet restore height is ${xmrrestoreheight}"
 [[ -z $particl_mnemonic ]] && red "\nIMPORTANT!! Make note of your seed (wallet recovery phrase) above!!\n\n"
 read -p "Press ENTER to continue. "
