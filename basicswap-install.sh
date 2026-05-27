@@ -155,6 +155,28 @@ until [[ "$electrum" =~ ^[1-4]$ ]]; do
     esac
 done
 
+# Wownero
+echo -e "\n[1] Include Wownero (~2 GiB)\n[2] Skip"
+until [[ "$wownero" =~ ^[12]$ ]]; do
+    if [[ $regtest ]]; then
+        wownero=2
+    else
+        read -p 'Select an option [1|2]: ' wownero
+    fi
+    case $wownero in
+        1)
+            add_wow="--wowrestoreheight=600000 --withcoins=wownero"
+            green "Wownero will be included"
+            ;;
+        2)
+            echo "Not setting up Wownero"
+            ;;
+        *)
+            red "You must answer 1 or 2"
+            ;;
+    esac
+done
+
 ## Configure Monero
 echo -e "\n[1] Connect to a Monero node\n[2] Allow BasicSwapDEX to run a Monero node (+90GB)"
 until [[ "$node" =~ ^[12]$ ]]; do
@@ -250,6 +272,7 @@ fi
 cp -r basicswap-bash bsx* $HOME/.local/bin/.
 
 ## Make venv and set variables for install
+export add_wow="${add_wow}"
 export use_electrum="${use_electrum}"
 export monerod_addr="${monerod_addr}"
 export monerod_port="${monerod_port}"
