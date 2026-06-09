@@ -10,11 +10,24 @@ echo "Updating BasicSwapDEX" && sleep 1
 rm -rf $SWAP_DATADIR/basicswap/build
 
 # Check and update UV python version
-if type -p uv; then
+detect_os_arch
+if [[ $DEBIAN ]]; then
     cd $SWAP_DATADIR
-    if uv run python -c "import sys; exit(0 if sys.version_info <= (${py_maj},${py_min}) else 1)"; then
+    if ./venv/bin/python -c "import sys; exit(0 if sys.version_info >= (${py_maj},${py_min}) else 1)"; then
+        green "Python in the venv is up to date"
+    else
+        if ! type -p uv; then
+            green "Migrating venv to uv"
+            if ! type -p pipx; then
+                green "Need to install pipx dependency"
+                $UPDATE
+                sudo apt install pipx --no-install-recommends
+            fi
+            $PIPX_UV
+        else
+            green "Updating uv Python to ${py_maj}.${py_min}"
+        fi
         rm -rf venv
-        green "Updating uv Python to ${py_maj}.${py_min}"
         uv venv -p ${py_maj}.${py_min} "${SWAP_DATADIR}/venv" --seed
     fi
 fi
