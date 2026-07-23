@@ -203,7 +203,7 @@ until [[ "$node" =~ ^[12]$ ]]; do
                     done
                 fi
 
-                checknode=$(timeout 15s curl -sk ${monerod_user:+"-u $monerod_user:$monerod_pass --digest"} http://$monerod_addr:$monerod_port/get_info | jq .height)
+                checknode=$(timeout 15s curl -sk ${monerod_user:+-u $monerod_user:$monerod_pass --digest} http://$monerod_addr:$monerod_port/get_info | jq .height)
                 if [[ $checknode ]]; then
                     green "\nSuccessfully connected to the XMR node @ $monerod_addr:$monerod_port"
                 else
