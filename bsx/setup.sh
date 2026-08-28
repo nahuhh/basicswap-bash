@@ -18,10 +18,6 @@ else
 fi
 
 ## Install basicswap, coincurve, and pip dependencies
-# Macos
-if [[ "${MACOS}" ]]; then
-    $SWAP_DATADIR/venv/bin/pip3 install certifi
-fi
 
 if [[ "${TAILS}" ]]; then
     torsocks $SWAP_DATADIR/venv/bin/pip3 install -r requirements.txt --require-hashes \
