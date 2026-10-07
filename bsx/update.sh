@@ -21,13 +21,13 @@ if [[ $DEBIAN ]]; then
             if ! type -p pipx; then
                 green "Need to install pipx dependency"
                 $UPDATE
-                sudo apt install pipx --no-install-recommends
+                $INSTALL pipx --no-install-recommends
             fi
             $PIPX_UV
         else
             green "Updating uv Python to ${py_maj}.${py_min}"
         fi
-        rm -rf venv
+        rm -rf "${SWAP_DATADIR}/venv"
         uv venv -p ${py_maj}.${py_min} "${SWAP_DATADIR}/venv" --seed
     fi
 fi

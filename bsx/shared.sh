@@ -220,7 +220,7 @@ detect_os_arch() {
             DEBIAN=1
             green "\n\nDetected Debian"
         fi
-        INSTALL="sudo apt install"
+        INSTALL="sudo apt install -y"
         UPDATE="sudo apt update"
         DEPENDENCY="pipx python3-venv libpython3-dev gnupg pkg-config gcc libc-dev --no-install-recommends"
         if [[ ! $(type -p uv) ]]; then
