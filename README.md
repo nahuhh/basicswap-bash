@@ -21,7 +21,7 @@ Other dependencies vary by distribution and are handled by the installer.
 ```bash
 # Clone repo
 git clone https://github.com/nahuhh/basicswap-bash \
-&& cd basicswap-bash
+    && cd basicswap-bash
 
 # Install BasicSwap
 ./basicswap-install.sh
@@ -94,6 +94,12 @@ bsx-addcoin
 bsx-removecoin
 ```
 
+#### Enable/Disable networks
+
+```
+bsx-network
+```
+
 ### BONUS placeorders
 
 This is a POC for placing new orders. YMMV
@@ -109,5 +115,3 @@ A small donation goes a long way. Thanks
 ```
 8Bb9z1bbiKmD9XekA7uESXRzunasN1ndej6FUm1bRFEtSPFqVWvHPtD2LDwhARikcxNkCsmaBcGGF2VSeFWhMe57FGXNaZP
 ```
-
-[WASS](getwishlisted.xyz/ofrnxmr)
