@@ -40,6 +40,17 @@ coins=$(
 	EOF
 )
 
+# Networks
+networks=$(
+    cat <<- EOF
+
+	smsg
+	simplex
+	nostr
+
+	EOF
+)
+
 # Coin map
 if [[ -z "${MACOS}" ]]; then
     declare -A coin_map
